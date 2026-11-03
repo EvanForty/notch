@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NOTCH — The Floor-Raising Launchpad</title>
+<meta name="description" content="NOTCH is a Solana launchpad where every token launches with a reserve-backed price floor that steps up as trading builds the reserve.">
+<meta name="theme-color" content="#051E1E">
+<meta property="og:title" content="NOTCH — The Floor-Raising Launchpad">
+<meta property="og:description" content="Every trade builds the floor. Every notch locks it higher.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@NotchPadDotFun">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF6E6;--panel:#FFFFFF;--panel2:#E0EFD4;--line:#9CBB8B;--text:#051E1E;--muted:#43625A;
+  --floor:#3D7A0E;--up:#12856C;--down:#C63F2E;--cta:#ABF56A;--cta-ink:#051E1E;--logo-bg:#051E1E;--logo:#ABF56A;
+  --display:'Silkscreen','Pixelify Sans',ui-monospace,monospace;
+  --body:'Pixelify Sans',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+  --c:3px;
+  color-scheme:light;box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#051E1E;--panel:#082828;--panel2:#0D3231;--line:#1B4A45;--text:#E4F8D6;--muted:#86AB9C;
+    --floor:#ABF56A;--up:#4FC4A3;--down:#FF7A68;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#051E1E;--panel:#082828;--panel2:#0D3231;--line:#1B4A45;--text:#E4F8D6;--muted:#86AB9C;
+  --floor:#ABF56A;--up:#4FC4A3;--down:#FF7A68;color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*,*::before,*::after{box-sizing:border-box;border-radius:0!important}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-font-smoothing:none;font-smooth:never}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:var(--bg)}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:70;background:repeating-linear-gradient(0deg,rgba(0,0,0,.05) 0 1px,transparent 1px 3px)}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--floor);outline-offset:-3px}
+svg{max-width:100%}
+img,svg,canvas{image-rendering:pixelated}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.1;margin:0;letter-spacing:0}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:var(--panel2)}
+::-webkit-scrollbar-thumb{background:var(--line);border:2px solid var(--panel2)}
+.muted{color:var(--muted)}
+.up{color:var(--up)}.down{color:var(--down)}.fl{color:var(--floor)}
+.av{flex:none;display:block}
+
+/* pixel corners */
+.card,.btn,.cta,.chip,.seg,.amt,.search,.modal,.wl,.toast,.nav,.badge,.rung,.nt,.wh,.out>div,.bag,.steps-nav button,.tok,.presets button,.links button,.xbtn{
+  clip-path:polygon(0 var(--c),var(--c) var(--c),var(--c) 0,calc(100% - var(--c)) 0,calc(100% - var(--c)) var(--c),100% var(--c),100% calc(100% - var(--c)),calc(100% - var(--c)) calc(100% - var(--c)),calc(100% - var(--c)) 100%,var(--c) 100%,var(--c) calc(100% - var(--c)),0 calc(100% - var(--c)))
+}
+.card{background:var(--panel);border:3px solid var(--line)}
+
+/* shell */
+.side{position:fixed;left:0;top:0;bottom:0;width:76px;padding:calc(14px + env(safe-area-inset-top,0px)) 0 16px;background:var(--panel);border-right:3px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:8px;z-index:30}
+.side .logo{margin-bottom:12px;display:block}
+.side .spacer{flex:1}
+.nav{width:50px;height:50px;display:grid;place-items:center;color:var(--muted);text-decoration:none;border:0;background:none;position:relative}
+.nav:hover,.nav.on{color:var(--text);background:var(--panel2)}
+.nav.on{box-shadow:inset 3px 0 0 var(--floor)}
+.nav.launch{background:var(--cta);color:var(--cta-ink);box-shadow:inset -3px -3px 0 rgba(0,0,0,.25)}
+.nav.launch:hover{background:var(--cta);color:var(--cta-ink);filter:brightness(1.07)}
+.nav .tip{position:fixed;left:84px;margin-top:-10px;white-space:nowrap;background:var(--text);color:var(--bg);font-size:14px;padding:3px 8px;opacity:0;pointer-events:none}
+.nav:hover .tip{opacity:1}
+.main{margin-left:76px;min-width:0}
+.ticker{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:3px solid var(--line);display:flex;gap:8px;padding:8px 14px;overflow:hidden;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:4px 10px 4px 5px;background:var(--panel);border:2px solid var(--line);font-size:14px;flex:none;--c:2px}
+.chip.new{animation:pop .4s steps(4)}
+@keyframes pop{from{transform:translateX(-16px);opacity:0}}
+.topbar{display:flex;align-items:center;gap:12px;padding:12px 16px 0;flex-wrap:wrap}
+.brand{display:none;align-items:center;gap:8px;font-family:var(--display);font-weight:700;font-size:20px;text-decoration:none}
+.pill{font-size:14px;padding:2px 9px;border:2px dashed var(--line);color:var(--muted)}
+.burn{font-size:15px;color:var(--muted)}
+.burn b{color:var(--floor);font-weight:600}
+.grow{flex:1}
+.btn{border:3px solid var(--line);background:var(--panel);padding:8px 14px;font-weight:600;font-size:15px;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{background:var(--panel2)}
+.btn.primary{background:var(--cta);color:var(--cta-ink);border-color:var(--cta);box-shadow:inset -3px -3px 0 rgba(0,0,0,.22)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn:active,.cta:active,.nav.launch:active{transform:translate(1px,1px);box-shadow:none}
+.icon-btn{width:44px;height:44px;justify-content:center;padding:0}
+@media (max-width:760px){
+  .side{top:auto;bottom:0;right:0;width:auto;flex-direction:row;justify-content:space-around;padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px));border-right:0;border-top:3px solid var(--line)}
+  .side .logo,.side .spacer{display:none}
+  .nav .tip{display:none}
+  .nav.on{box-shadow:inset 0 -3px 0 var(--floor)}
+  .main{margin-left:0;padding-bottom:86px}
+  .brand{display:flex}
+  .burn,.xtop{display:none}
+}
+.view[hidden]{display:none}
+
+/* segmented bars */
+.prog{height:6px;background:var(--panel2);width:48px;overflow:hidden;display:inline-block}
+.prog i{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--floor) 0 4px,transparent 4px 6px)}
+.tier{display:inline-flex;align-items:center;font-size:13px;font-weight:600;padding:0 6px;color:var(--tc);background:color-mix(in srgb,var(--tc) 14%,transparent);border:2px solid color-mix(in srgb,var(--tc) 55%,transparent);white-space:nowrap;line-height:1.35}
+
+/* trade */
+.trade{display:grid;grid-template-columns:300px minmax(0,1fr) 340px;gap:14px;padding:14px 16px 24px;align-items:start}
+@media (max-width:1260px){.trade{grid-template-columns:minmax(0,1fr) 330px}.list{grid-column:1/-1;order:3}}
+@media (max-width:920px){.trade{grid-template-columns:minmax(0,1fr)}.right{order:2}}
+.list{padding:10px;position:sticky;top:calc(66px + env(safe-area-inset-top,0px))}
+@media (max-width:1260px){.list{position:static}}
+.search{display:flex;align-items:center;gap:8px;background:var(--panel2);padding:0 10px;margin-bottom:8px;color:var(--muted)}
+.search input{border:0;background:none;outline:none;padding:9px 0;width:100%;color:var(--text)}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.tab{border:0;background:none;padding:5px 10px;font-size:15px;font-weight:600;color:var(--muted)}
+.tab:hover{color:var(--text)}
+.tab.on{background:var(--floor);color:var(--bg)}
+.toklist{max-height:calc(100vh - 210px);overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+@media (max-width:1260px){.toklist{max-height:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}}
+.tok{display:flex;align-items:center;gap:10px;padding:8px;border:0;background:none;text-align:left;width:100%}
+.tok:hover{background:var(--panel2)}
+.tok.on{background:var(--panel2);box-shadow:inset 3px 0 0 var(--floor)}
+.tok-main{flex:1;min-width:0}
+.tok-name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tok-name .tk{color:var(--muted);font-weight:400;font-size:14px;margin-left:4px}
+.tok-sub{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.tok-num{text-align:right;font-size:15px;font-weight:600}
+.tok-num small{display:block;font-weight:400;font-size:13px;color:var(--floor)}
+
+.center{min-width:0;display:flex;flex-direction:column;gap:14px}
+.head{display:flex;gap:14px;align-items:center;flex-wrap:wrap;padding:16px}
+.head h1{font-size:24px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.head h1 .tk{font-family:var(--body);font-size:16px;font-weight:400;color:var(--muted)}
+.meta{display:flex;gap:10px;align-items:center;font-size:14px;color:var(--muted);flex-wrap:wrap;margin-top:4px}
+.ca{border:2px solid var(--line);background:var(--panel2);padding:0 8px;font-size:14px;color:var(--muted)}
+.ca:hover{color:var(--text)}
+.stats{display:flex;gap:22px;flex-wrap:wrap;margin-left:auto}
+.stat .k{font-size:13px;color:var(--muted)}
+.stat .v{font-size:21px;font-weight:600;line-height:1.2}
+.stat .v.fl{color:var(--floor)}
+.chartcard{padding:12px 12px 8px}
+.chartbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:0 4px 8px;font-size:14px}
+.ohlc{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted)}
+.ohlc b{color:var(--text);font-weight:600}
+.seg{display:inline-flex;background:var(--panel2);padding:3px;gap:2px}
+.seg button{border:0;background:none;padding:5px 12px;font-size:15px;font-weight:600;color:var(--muted)}
+.seg button.on{background:var(--panel);color:var(--text);box-shadow:inset 0 -3px 0 var(--floor)}
+.chartwrap{position:relative;height:380px}
+@media (max-width:760px){.chartwrap{height:290px}}
+#chart{display:block;width:100%;height:100%;touch-action:pan-y;image-rendering:pixelated}
+.legend{display:flex;gap:16px;font-size:14px;color:var(--muted);padding:6px 4px 2px;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:4px;display:inline-block}
+
+.tracker{padding:16px;display:grid;grid-template-columns:auto 1fr;gap:16px 20px;align-items:center}
+@media (max-width:620px){.tracker{grid-template-columns:1fr}}
+.badge{width:88px;height:88px;display:grid;place-items:center;text-align:center;background:color-mix(in srgb,var(--tc) 14%,var(--panel));border:3px solid var(--tc);color:var(--tc);--c:6px}
+.badge b{font-family:var(--display);font-size:26px;line-height:1}
+.badge span{font-size:14px;font-weight:600}
+.tr-title{font-family:var(--display);font-weight:700;font-size:18px}
+.bar{height:14px;background:var(--panel2);overflow:hidden;margin:10px 0 6px;position:relative;border:2px solid var(--line)}
+.bar i{position:absolute;inset:0 auto 0 0;background:repeating-linear-gradient(90deg,var(--floor) 0 8px,transparent 8px 10px);transition:width .4s steps(6)}
+.ladder{display:flex;gap:6px;grid-column:1/-1;flex-wrap:wrap}
+.rung{flex:1;min-width:64px;padding:7px 10px;background:var(--panel2);font-size:13px;color:var(--muted);border:2px solid transparent}
+.rung b{display:block;color:var(--text);font-size:15px}
+.rung.done{border-color:color-mix(in srgb,var(--tc) 50%,transparent)}
+.rung.done b{color:var(--tc)}
+.rung.now{background:color-mix(in srgb,var(--tc) 18%,var(--panel2));border-color:var(--tc)}
+
+.bottom{padding:12px}
+.rows{display:flex;flex-direction:column}
+.row{display:grid;grid-template-columns:minmax(0,1.6fr) .8fr 1fr 1fr .6fr;gap:10px;padding:8px 6px;border-bottom:2px dashed var(--line);font-size:15px;align-items:center}
+.row:last-child{border-bottom:0}
+.row.h{color:var(--muted);font-size:14px;border-bottom-style:solid}
+.row .who{display:flex;align-items:center;gap:8px;min-width:0}
+.row .who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row.you{background:color-mix(in srgb,var(--floor) 10%,transparent)}
+.r{text-align:right}
+.row.fresh{animation:fresh .8s steps(4)}
+@keyframes fresh{from{background:color-mix(in srgb,var(--floor) 22%,transparent)}}
+@media (max-width:560px){.row{grid-template-columns:minmax(0,1.4fr) .7fr 1fr}.row .hide-s{display:none}}
+
+.right{display:flex;flex-direction:column;gap:14px;min-width:0}
+.swap{padding:14px}
+.swap .seg{display:flex;margin-bottom:14px}
+.swap .seg button{flex:1;padding:8px}
+.swap .seg button.on[data-side="buy"]{color:var(--up);box-shadow:inset 0 -3px 0 var(--up)}
+.swap .seg button.on[data-side="sell"]{color:var(--down);box-shadow:inset 0 -3px 0 var(--down)}
+.lbl{font-size:14px;color:var(--muted)}
+.amt{display:flex;align-items:center;gap:8px;background:var(--panel2);padding:6px 12px;margin:6px 0 8px;border:2px solid var(--line)}
+.amt input{border:0;background:none;outline:none;font-family:var(--display);font-size:26px;width:100%;min-width:0;padding:4px 0}
+.unit{font-weight:600;color:var(--muted);white-space:nowrap}
+.presets{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.presets button{border:2px solid var(--line);background:none;padding:6px 0;font-size:14px;font-weight:600;--c:2px}
+.presets button:hover{background:var(--panel2);border-color:var(--floor)}
+.recv{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:10px 2px;border-top:2px dashed var(--line)}
+.recv b{font-size:18px}
+.fees{font-size:14px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:8px 2px 12px;color:var(--muted)}
+.fees span:nth-child(even){text-align:right;color:var(--text)}
+.cta{width:100%;border:0;padding:13px;font-family:var(--display);font-weight:700;font-size:16px;background:var(--cta);color:var(--cta-ink);box-shadow:inset -4px -4px 0 rgba(0,0,0,.22);--c:4px}
+.cta:hover{filter:brightness(1.07)}
+.cta[disabled]{opacity:.5;cursor:not-allowed}
+.fine{font-size:13px;color:var(--muted);margin:8px 0 0;text-align:center}
+.bag{margin-top:12px;padding:10px 12px;background:var(--panel2);font-size:14px;display:grid;grid-template-columns:1fr auto;gap:2px 10px}
+.bag span:nth-child(even){text-align:right;font-weight:600}
+.flow{padding:14px}
+.flow .two{display:flex;justify-content:space-between;font-size:14px;color:var(--muted)}
+.flow .two b{display:block;color:var(--text);font-size:19px}
+.split{display:flex;gap:3px;height:8px;margin:8px 0 14px}
+.split i{display:block}
+.about{padding:14px;font-size:15px}
+.about p{margin:6px 0 12px;color:var(--muted)}
+.sig{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:2px dashed var(--line);font-size:14px}
+.dot{width:8px;height:8px;margin-top:6px;flex:none}
+
+/* leaderboard */
+.page{max-width:1180px;margin:0 auto;padding:22px 18px 40px}
+.page-head{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.page-head h1{font-size:clamp(26px,4vw,40px)}
+.page-head p{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:800px;font-size:15px}
+th{font-weight:500;color:var(--muted);font-size:14px;text-align:right;padding:12px 14px;border-bottom:3px solid var(--line);white-space:nowrap}
+th:nth-child(-n+3){text-align:left}
+td{padding:11px 14px;border-bottom:2px dashed var(--line);text-align:right;white-space:nowrap}
+td:nth-child(-n+3){text-align:left}
+tbody tr{cursor:pointer}
+tbody tr:hover td{background:var(--panel2)}
+tbody tr:last-child td{border-bottom:0}
+.tcell{display:flex;align-items:center;gap:10px;font-weight:600}
+.tcell small{color:var(--muted);font-weight:400}
+.rank{font-family:var(--display);font-weight:700;color:var(--muted);width:28px}
+.growbar{display:inline-block;vertical-align:middle;width:70px;height:8px;background:var(--panel2);margin-left:8px;overflow:hidden}
+.growbar i{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--floor) 0 4px,transparent 4px 6px)}
+
+/* how */
+.how{max-width:1120px;margin:0 auto;padding:10px 20px 40px}
+.hero{padding:34px 0 10px}
+.hero-top{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.hero h1{font-size:clamp(34px,6.6vw,84px);line-height:1}
+.hero h1 .l2{display:block;color:var(--floor)}
+.hero p{font-size:19px;max-width:58ch;color:var(--muted);margin:16px 0 0}
+.herochart{margin:24px 0 0}
+.herochart svg{display:block;width:100%;height:auto}
+.steps-nav{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 6px}
+.steps-nav button{display:inline-flex;gap:8px;align-items:center;border:2px solid var(--line);background:var(--panel);padding:5px 14px 5px 5px;font-weight:600;font-size:15px}
+.steps-nav button:hover{border-color:var(--floor)}
+.num{width:26px;height:26px;display:grid;place-items:center;font-family:var(--display);font-size:13px;font-weight:700;background:var(--floor);color:var(--bg);flex:none}
+.step{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;padding:44px 0;border-top:3px dashed var(--line);align-items:center}
+@media (max-width:860px){.step{grid-template-columns:1fr;gap:22px}}
+.step .k{display:flex;gap:10px;align-items:center;font-size:15px;color:var(--muted);margin-bottom:12px}
+.step h2{font-size:clamp(22px,2.8vw,30px);margin-bottom:12px}
+.step p{margin:0 0 12px;max-width:62ch}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;border-top:3px solid var(--line);border-bottom:3px solid var(--line);padding:14px 0;margin-top:18px}
+.facts .k{margin:0;font-size:14px}
+.facts b{font-family:var(--display);font-size:22px;display:block}
+.viz{padding:18px}
+.viz svg{display:block;width:100%;height:auto}
+.viz .cap{font-size:14px;color:var(--muted);margin:10px 0 0}
+.feebars{display:flex;flex-direction:column}
+.fb{display:grid;grid-template-columns:160px 1fr 76px;gap:12px;align-items:center;padding:10px 0;border-bottom:2px dashed var(--line);font-size:15px}
+.fb:last-child{border-bottom:0}
+.fb.top{font-weight:600}
+.fb i{display:block;height:10px}
+.fb span:last-child{text-align:right;font-weight:600}
+@media (max-width:480px){.fb{grid-template-columns:120px 1fr 64px}}
+.sect{padding:44px 0;border-top:3px dashed var(--line)}
+.sect h2.big{font-size:clamp(24px,3.2vw,34px);margin-bottom:8px}
+.sect p.lead{color:var(--muted);max-width:62ch;margin:0 0 20px}
+.notchtable{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:end}
+@media (max-width:900px){.notchtable{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:520px){.notchtable{grid-template-columns:repeat(2,1fr)}}
+.nt{padding:16px;border:3px solid var(--tc);background:color-mix(in srgb,var(--tc) 9%,var(--panel));--c:6px}
+.nt b{font-family:var(--display);font-size:28px;color:var(--tc);display:block;line-height:1}
+.nt .s{font-weight:600;margin-top:10px}
+.nt .d{font-size:14px;color:var(--muted)}
+.nt .blocks{display:flex;gap:3px;margin-top:12px;flex-wrap:wrap}
+.nt .blocks i{width:10px;height:10px;background:var(--tc)}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+@media (max-width:860px){.cols2{grid-template-columns:1fr}}
+.alloc{padding:6px 18px}
+.al{display:grid;grid-template-columns:14px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:2px dashed var(--line)}
+.al:last-child{border-bottom:0;font-weight:700}
+.al i{width:14px;height:14px}
+.wheel{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:620px){.wheel{grid-template-columns:1fr 1fr}}
+.wh{padding:14px;background:var(--panel);border:3px solid var(--line);font-size:15px}
+.wh .num{margin-bottom:8px}
+.wheel-note{font-size:14px;color:var(--muted);margin:12px 0 0}
+.calc{padding:20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+@media (max-width:760px){.calc{grid-template-columns:1fr}}
+.field{display:block;margin-bottom:18px}
+.field span{display:flex;justify-content:space-between;font-size:15px;margin-bottom:6px}
+.field span b{font-weight:600;color:var(--floor)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:12px;background:var(--panel2);border:2px solid var(--line);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:22px;background:var(--floor);border:2px solid var(--bg);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:16px;height:20px;background:var(--floor);border:2px solid var(--bg);cursor:pointer}
+.out{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.out>div{padding:12px 14px;background:var(--panel2)}
+.out .k{font-size:14px;color:var(--muted)}
+.out b{font-family:var(--display);font-size:20px;display:block}
+.out .big{grid-column:1/-1;background:color-mix(in srgb,var(--floor) 16%,var(--panel2))}
+.out .big b{font-size:30px;color:var(--floor)}
+.why{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media (max-width:860px){.why{grid-template-columns:1fr}}
+.why h3{font-size:17px;margin-bottom:6px}
+.why p{margin:0;color:var(--muted)}
+.reqs{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}
+@media (max-width:760px){.reqs{grid-template-columns:1fr}}
+.req{padding:13px 0;border-bottom:2px dashed var(--line)}
+.req b{display:block;margin-bottom:2px}
+.req span{color:var(--muted);font-size:15px}
+.faq{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}
+@media (max-width:760px){.faq{grid-template-columns:1fr}}
+details{border-bottom:2px dashed var(--line);padding:13px 0}
+summary{font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--floor);font-family:var(--display);font-size:18px;line-height:1}
+details[open] summary::after{content:"-"}
+details p{margin:8px 0 0;color:var(--muted);font-size:15.5px}
+.band{margin-top:30px;padding:22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.band h3{font-size:22px}
+.band p{margin:4px 0 0;color:var(--muted)}
+.disc{font-size:14px;color:var(--muted);margin:28px 0 0;max-width:90ch}
+
+/* modals */
+.scrim{position:fixed;inset:0;background:rgba(2,12,12,.72);display:grid;place-items:center;z-index:50;padding:16px}
+.scrim[hidden]{display:none}
+.modal{width:min(560px,100%);max-height:calc(100% - 20px);overflow-y:auto;padding:20px;background:var(--panel);border:3px solid var(--floor);animation:rise .2s steps(3);--c:6px}
+@keyframes rise{from{transform:translateY(12px);opacity:0}}
+.mhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.mhead h2{font-size:20px}
+.x{border:0;background:none;width:38px;height:38px;display:grid;place-items:center;color:var(--muted)}
+.x:hover{background:var(--panel2);color:var(--text)}
+.lrow{display:flex;gap:14px;align-items:center}
+.bare{border:0;background:none;outline:none;width:100%;padding:2px 0}
+.bare.name{font-family:var(--display);font-weight:700;font-size:24px}
+.bare.tick{font-weight:600;color:var(--floor);font-size:18px}
+.bare.desc{resize:vertical;min-height:52px;margin-top:12px;color:var(--text);border:2px dashed var(--line);padding:6px 8px}
+.links{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 4px}
+.links button{border:2px solid var(--line);background:none;padding:5px 12px;font-size:14.5px;--c:2px}
+.links button.on{border-color:var(--floor);color:var(--floor)}
+.linkin{display:none;margin-top:8px;width:100%;border:2px solid var(--line);background:var(--panel2);padding:7px 10px;outline:none}
+.linkin.show{display:block}
+.mline{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:2px dashed var(--line);flex-wrap:wrap}
+.note{font-size:14px;color:var(--muted);text-align:center;margin:10px 0 0}
+.warn{font-size:14px;color:var(--down);margin:6px 0 0}
+.wallets{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:420px){.wallets{grid-template-columns:repeat(2,1fr)}}
+.wl{border:3px solid var(--line);background:var(--panel2);padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:8px;font-weight:600;font-size:15px}
+.wl:hover{border-color:var(--floor)}
+.wl i{width:44px;height:44px;display:grid;place-items:center;font-style:normal;font-family:var(--display);font-weight:700;font-size:20px;color:#fff;box-shadow:inset -4px -4px 0 rgba(0,0,0,.25)}
+.toasts{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px;z-index:60;max-width:min(380px,calc(100vw - 32px))}
+@media (max-width:760px){.toasts{bottom:calc(88px + env(safe-area-inset-bottom,0px))}}
+.toast{background:var(--panel);border:3px solid var(--floor);padding:10px 14px;font-size:15px;animation:rise .2s steps(3)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<nav class="side" aria-label="Main">
+  <a class="logo" href="#trade" aria-label="NOTCH home" data-logo="52"></a>
+  <a class="nav" data-nav="trade" href="#trade"><span data-ic="trend"></span><span class="tip">Explore</span></a>
+  <a class="nav" data-nav="leaderboard" href="#leaderboard"><span data-ic="bars"></span><span class="tip">Notch leaderboard</span></a>
+  <button class="nav launch" data-open="launch" aria-label="Launch a token"><span data-ic="plus"></span><span class="tip">Launch a token</span></button>
+  <a class="nav" data-nav="how" href="#how"><span data-ic="book"></span><span class="tip">How it works</span></a>
+  <span class="spacer"></span>
+  <a class="nav" href="https://x.com/NotchPadDotFun" target="_blank" rel="noopener noreferrer" aria-label="NOTCH on X"><span data-ic="x"></span><span class="tip">@NotchPadDotFun on X</span></a>
+</nav>
+
+<div class="main">
+  <div class="ticker" id="ticker" aria-label="Latest trades"></div>
+  <div class="topbar">
+    <a class="brand" href="#trade"><span data-logo="34"></span>NOTCH</a>
+    <span class="pill">Concept demo with simulated trades</span>
+    <span class="burn">$NOTCH bought back and burned: <b id="burnStat">$0</b></span>
+    <span class="grow"></span>
+    <a class="btn xtop" href="https://x.com/NotchPadDotFun" target="_blank" rel="noopener noreferrer"><span data-ic="x" data-s="16"></span>@NotchPadDotFun</a>
+    <button class="btn icon-btn" id="themeBtn" aria-label="Switch light or dark theme"><span data-ic="moon" data-s="18"></span></button>
+    <button class="btn primary" id="walletBtn">Connect wallet</button>
+  </div>
+
+  <!-- TRADE -->
+  <section class="view" id="v-trade">
+    <div class="trade">
+      <aside class="card list">
+        <label class="search"><span data-ic="search" data-s="16"></span><input id="q" placeholder="Search tokens" aria-label="Search tokens"></label>
+        <div class="tabs" id="listTabs">
+          <button class="tab on" data-t="trending">Trending</button>
+          <button class="tab" data-t="near">Near a notch</button>
+          <button class="tab" data-t="new">New</button>
+          <button class="tab" data-t="floor">Floor</button>
+        </div>
+        <div class="toklist" id="toklist"></div>
+      </aside>
+
+      <div class="center">
+        <div class="card head">
+          <div id="hAv"></div>
+          <div>
+            <h1><span id="hName"></span><span class="tk" id="hTick"></span><span id="hTier"></span></h1>
+            <div class="meta"><span id="hAge"></span><button class="ca" id="hCa" title="Copy contract address"></button><span id="hCreator"></span></div>
+          </div>
+          <div class="stats">
+            <div class="stat"><div class="k">Market cap</div><div class="v" id="sMcap"></div></div>
+            <div class="stat"><div class="k">Floor</div><div class="v fl" id="sFloor"></div></div>
+            <div class="stat"><div class="k">Price</div><div class="v" id="sPrice"></div></div>
+            <div class="stat"><div class="k">Reserve</div><div class="v" id="sRes"></div></div>
+          </div>
+        </div>
+
+        <div class="card chartcard">
+          <div class="chartbar">
+            <div class="ohlc" id="ohlc"></div>
+            <span class="grow"></span>
+            <div class="seg" id="modeSeg"><button class="on" data-m="mcap">Mcap</button><button data-m="price">Price</button></div>
+          </div>
+          <div class="chartwrap"><canvas id="chart" aria-label="Price chart with reserve-backed floor"></canvas></div>
+          <div class="legend"><span><i class="sw" style="background:var(--up)"></i>Market price</span><span><i class="sw" style="background:var(--floor)"></i>Backed floor</span><span>Each step on the floor line is a notch unlocking.</span></div>
+        </div>
+
+        <div class="card tracker" id="tracker"></div>
+
+        <div class="card bottom">
+          <div class="tabs" id="bTabs">
+            <button class="tab on" data-b="swaps">Swaps</button>
+            <button class="tab" data-b="holders">Holders</button>
+            <button class="tab" data-b="notches">Notch history</button>
+          </div>
+          <div class="rows" id="bottom"></div>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="card swap">
+          <div class="seg" id="sideSeg"><button class="on" data-side="buy">Buy</button><button data-side="sell">Sell</button></div>
+          <div class="lbl" id="payLbl">You pay</div>
+          <div class="amt"><input id="amt" inputmode="decimal" autocomplete="off" placeholder="0" aria-label="Amount"><span class="unit" id="amtUnit">SOL</span></div>
+          <div class="presets" id="presets"></div>
+          <div class="recv"><span class="lbl">You receive, estimated</span><b id="recv">—</b></div>
+          <div class="fees" id="fees"></div>
+          <button class="cta" id="swapBtn">Connect wallet</button>
+          <p class="fine">Prototype only. No transaction is sent and no funds move.</p>
+          <div id="bag"></div>
+        </div>
+        <div class="card flow" id="flow"></div>
+        <div class="card about" id="about"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEADERBOARD -->
+  <section class="view" id="v-leaderboard" hidden>
+    <div class="page">
+      <div class="page-head">
+        <div>
+          <h1>Notch leaderboard</h1>
+          <p>Tokens ranked by how far their backed floor has climbed. A notch is earned by reserve growth, not by price.</p>
+        </div>
+        <span class="grow"></span>
+        <div class="seg" id="lbSeg">
+          <button class="on" data-s="growth">Floor growth</button>
+          <button data-s="n">Notches</button>
+          <button data-s="reserve">Reserve</button>
+          <button data-s="vol">Volume</button>
+        </div>
+      </div>
+      <div class="card tablewrap">
+        <table>
+          <thead><tr><th>#</th><th>Token</th><th>Notch</th><th>Floor</th><th>Floor growth</th><th>Reserve</th><th>Next notch</th><th>Market cap</th><th>Volume</th></tr></thead>
+          <tbody id="lbBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section class="view" id="v-how" hidden>
+    <div class="how">
+      <div class="hero">
+        <div class="hero-top">
+          <span data-logo="132"></span>
+          <h1>Prices fluctuate.<span class="l2">Floors climb.</span></h1>
+        </div>
+        <p>NOTCH is a Solana launchpad where every token launches with a reserve-backed price floor. Trading fees fill the reserve, and each time the reserve crosses its next threshold, the floor steps up a notch and locks there.</p>
+        <div class="card herochart" id="heroChart"></div>
+      </div>
+
+      <div class="steps-nav" id="stepsNav">
+        <button data-go="s1"><span class="num">1</span>Launch a token</button>
+        <button data-go="s2"><span class="num">2</span>Generate trading fees</button>
+        <button data-go="s3"><span class="num">3</span>Unlock a notch</button>
+        <button data-go="s4"><span class="num">4</span>Lock the new floor</button>
+        <button data-go="s5"><span class="num">5</span>Buyback and burn</button>
+      </div>
+
+      <div class="step" id="s1">
+        <div>
+          <div class="k"><span class="num">1</span>Launch a token</div>
+          <h2>Every token starts with a floor reserve.</h2>
+          <p>Anyone can deploy a token through NOTCH. Liquidity is protocol-controlled, and each token gets its own floor reserve from the first block, so it begins life at N0 with a minimum redemption value already in place.</p>
+          <p>There’s no presale and no team allocation waiting to unlock. The creator can take a first buy of up to 5% at launch, paying the same fee as everyone else, and it’s shown publicly.</p>
+          <div class="facts"><div><p class="k">Supply</p><b>1B</b></div><div><p class="k">Starts at</p><b>≈$10K</b></div><div><p class="k">Liquidity</p><b>Locked</b></div></div>
+        </div>
+        <div class="card viz" id="viz1"></div>
+      </div>
+
+      <div class="step" id="s2">
+        <div>
+          <div class="k"><span class="num">2</span>Generate trading fees</div>
+          <h2>Every buy and sell pays 3%.</h2>
+          <p>Half of that fee goes straight into the token’s own floor reserve. The rest is split evenly between buying back and burning $NOTCH, the token’s creator, and the protocol treasury.</p>
+          <p>The split is identical on buys and sells, so a sell-off still adds to the reserve.</p>
+          <div class="facts"><div><p class="k">To the reserve</p><b>1.5%</b></div><div><p class="k">$NOTCH burn</p><b>0.5%</b></div><div><p class="k">Creator</p><b>0.5%</b></div></div>
+        </div>
+        <div class="card viz">
+          <div class="feebars" id="feebars"></div>
+          <p class="cap">A $1,000 buy. The same split applies to every buy and every sell.</p>
+        </div>
+      </div>
+
+      <div class="step" id="s3">
+        <div>
+          <div class="k"><span class="num">3</span>Unlock a notch</div>
+          <h2>The reserve fills, the floor steps up.</h2>
+          <p>Each token has a visible threshold for its next notch. When the reserve reaches it, the token unlocks that notch and its guaranteed redemption floor rises in proportion.</p>
+          <p>In this demo, a notch unlocks every time the reserve grows 25% beyond the level locked at the previous notch, which raises the floor by 25%.</p>
+        </div>
+        <div class="card viz" id="viz3"></div>
+      </div>
+
+      <div class="step" id="s4">
+        <div>
+          <div class="k"><span class="num">4</span>Lock the new floor</div>
+          <h2>A floor, once reached, stays.</h2>
+          <p>Each notch becomes the new minimum redemption value, provided the reserve stays fully collateralized and protocol rules block any withdrawal that would undermine the backing.</p>
+          <p>When holders sell hard, the market price can fall a long way, but redemptions are supported at the floor, and sells keep paying into the reserve on the way down.</p>
+        </div>
+        <div class="card viz" id="viz4"></div>
+      </div>
+
+      <div class="step" id="s5">
+        <div>
+          <div class="k"><span class="num">5</span>Buyback and burn</div>
+          <h2>Excess reserve buys tokens and burns them.</h2>
+          <p>When a reserve earns more than its backing requirement and predefined conditions are met, the excess buys tokens from the market and burns them permanently. Fewer tokens in circulation means more backing behind each one.</p>
+        </div>
+        <div class="card viz" id="viz5"></div>
+      </div>
+
+      <div class="sect">
+        <h2 class="big">The notch system</h2>
+        <p class="lead">Every token climbs through visible milestones as its backing grows. Levels are earned through verified reserve backing, never through price targets.</p>
+        <div class="notchtable" id="notchtable"></div>
+      </div>
+
+      <div class="sect">
+        <div class="cols2">
+          <div>
+            <h2 class="big">Where the 3% goes</h2>
+            <p class="lead">Proposed fee on every transaction.</p>
+            <div class="card alloc" id="alloc"></div>
+          </div>
+          <div>
+            <h2 class="big">The $NOTCH flywheel</h2>
+            <p class="lead">More launches mean more volume, which means more fees for reserves and for $NOTCH buybacks.</p>
+            <div class="wheel" id="wheel"></div>
+            <p class="wheel-note">The flywheel runs on genuine trading demand and doesn’t guarantee that $NOTCH rises in price.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2 class="big">How long until the next notch?</h2>
+        <p class="lead">Drag the sliders to see how trading volume turns into reserve growth under this demo’s rule of a notch every 25% of reserve growth.</p>
+        <div class="card calc">
+          <div>
+            <label class="field"><span>Daily trading volume <b id="cVolL"></b></span><input type="range" id="cVol" min="0" max="100" value="45"></label>
+            <label class="field"><span>Current floor reserve <b id="cResL"></b></span><input type="range" id="cRes" min="0" max="100" value="40"></label>
+          </div>
+          <div class="out" id="cOut"></div>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2 class="big">Why NOTCH?</h2>
+        <p class="lead">Most launchpads stop caring once a token is live. NOTCH is built around what happens after launch.</p>
+        <div class="why">
+          <div><h3>Transparent floor reserves</h3><p>Every token’s reserve, floor and progress to the next notch are on the token page, updated with every trade.</p></div>
+          <div><h3>Milestone floor increases</h3><p>The floor rises in discrete, visible steps tied to reserve thresholds, so holders know what the next notch takes.</p></div>
+          <div><h3>Trading becomes backing</h3><p>Fees aren’t only revenue. Half of every fee is turned into measurable backing for the token it was paid on.</p></div>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2 class="big">What a production version needs</h2>
+        <p class="lead">This page is a concept. Turning it into something people can trust takes more than a design.</p>
+        <div class="reqs">
+          <div class="req"><b>Audited reserve accounting</b><span>Independent audits of the reserve, notch and redemption contracts before any real funds go in.</span></div>
+          <div class="req"><b>Enforceable redemption rights</b><span>Holders must be able to redeem at the floor on-chain without anyone’s permission.</span></div>
+          <div class="req"><b>Safeguards against depletion</b><span>Rules that stop the reserve being drained below what the current floor requires.</span></div>
+          <div class="req"><b>Honest dollar framing</b><span>Floors held in SOL can still fall in USD terms when SOL falls. The interface should show both.</span></div>
+          <div class="req"><b>Bundle and insider flags</b><span>Wallets that bought together at launch, or were funded by the creator, flagged on the token page with evidence.</span></div>
+          <div class="req"><b>One official address</b><span>Verified contracts on the explorer, with the $NOTCH address published only by @NotchPadDotFun.</span></div>
+        </div>
+      </div>
+
+      <div class="sect">
+        <h2 class="big">Questions</h2>
+        <div class="faq">
+          <div>
+            <details><summary>Can the floor go down?</summary><p>Under the protocol rules, a locked notch doesn’t step down in SOL terms while the reserve stays fully collateralized. Its value in dollars still moves with the price of SOL.</p></details>
+            <details><summary>What is a notch?</summary><p>A milestone in a token’s backing. Each time its reserve crosses the next threshold, the floor rises and the token moves up a level: Bronze, Silver, Gold, Diamond, then unlimited further notches.</p></details>
+            <details><summary>What does a swap cost?</summary><p>3% on every buy and every sell: 1.5% to the token’s floor reserve, 0.5% to $NOTCH buyback and burn, 0.5% to the creator and 0.5% to the treasury.</p></details>
+            <details><summary>Is redemption at the floor guaranteed?</summary><p>Redemptions are supported at the established floor, subject to the reserve’s backing and available liquidity. That’s why audits and depletion safeguards are listed as requirements above.</p></details>
+          </div>
+          <div>
+            <details><summary>Can the creator pull the reserve?</summary><p>The design gives creators no withdrawal rights over liquidity or the reserve. Creators earn 0.5% of volume and can take a public first buy of up to 5%.</p></details>
+            <details><summary>What does $NOTCH do?</summary><p>It’s the platform token. 0.5% of all volume across every NOTCH token buys $NOTCH from the market and burns it.</p></details>
+            <details><summary>Where is the official address?</summary><p>Only from @NotchPadDotFun on X. Treat any address posted anywhere else as unofficial.</p></details>
+            <details><summary>Are the numbers on this site real?</summary><p>No. Every token, trader and trade here is simulated in your browser to show how the mechanism behaves.</p></details>
+          </div>
+        </div>
+      </div>
+
+      <div class="card band">
+        <span data-logo="64"></span>
+        <div><h3>Every token starts at zero notches.</h3><p>Every trade can contribute to the next one.</p></div>
+        <span class="grow"></span>
+        <a class="btn" href="https://x.com/NotchPadDotFun" target="_blank" rel="noopener noreferrer"><span data-ic="x" data-s="16"></span>Follow on X</a>
+        <button class="btn primary" data-open="launch">Launch a token</button>
+      </div>
+      <p class="disc">NOTCH is a concept prototype. Nothing on this page is an offer, investment advice or a promise of returns. Floors depend on reserve growth and protocol rules, floors denominated in SOL can fall in USD terms, and token prices can fall to the floor or below what you paid.</p>
+    </div>
+  </section>
+</div>
+
+<!-- launch modal -->
+<div class="scrim" id="m-launch" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="lTitle">
+    <div class="mhead"><h2 id="lTitle">Launch a token</h2><button class="x" data-close aria-label="Close"><span data-ic="close" data-s="16"></span></button></div>
+    <div class="lrow">
+      <div id="lAv"></div>
+      <div style="flex:1;min-width:0">
+        <input class="bare name" id="lName" placeholder="Token name" maxlength="32" aria-label="Token name">
+        <input class="bare tick" id="lTick" placeholder="$TICKER" maxlength="11" aria-label="Ticker">
+      </div>
+    </div>
+    <textarea class="bare desc" id="lDesc" placeholder="What’s it about? (optional)" aria-label="Description"></textarea>
+    <div class="links" id="lLinks">
+      <button data-l="x">+ X profile</button><button data-l="tg">+ Telegram</button><button data-l="web">+ Website</button>
+    </div>
+    <input class="linkin" id="lx" placeholder="https://x.com/…"><input class="linkin" id="ltg" placeholder="https://t.me/…"><input class="linkin" id="lweb" placeholder="https://…">
+    <div class="mline" style="margin-top:12px"><span>Pair</span><span class="seg" id="pairSeg"><button class="on">SOL</button><button>USDC</button></span></div>
+    <div class="mline"><span>First buy</span><span class="seg" id="fbSeg"><button class="on" data-p="0">None</button><button data-p="1">1%</button><button data-p="2.5">2.5%</button><button data-p="5">5%</button></span></div>
+    <p class="warn" id="lWarn"></p>
+    <button class="cta" id="lGo">Launch</button>
+    <p class="note">Starts at ≈$10K with 1B supply. You earn 0.5% of volume. Floor reserve seeded at launch.</p>
+  </div>
+</div>
+
+<!-- wallet modal -->
+<div class="scrim" id="m-wallet" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="wTitle" style="width:min(460px,100%)">
+    <div class="mhead"><h2 id="wTitle">Connect a wallet</h2><button class="x" data-close aria-label="Close"><span data-ic="close" data-s="16"></span></button></div>
+    <p class="muted" style="margin:-6px 0 14px;font-size:15px">This prototype doesn’t connect to a real wallet. Picking one gives you a simulated balance of 25 SOL to try trading.</p>
+    <div class="wallets" id="wallets"></div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const SOL=150, STEP=1.25, RES_RATIO=0.1, LAUNCH_FLOOR=5000, SUPPLY=1e9;
+const PF='Silkscreen, Pixelify Sans, monospace';
+
+/* ---------- logo & pixel icons ---------- */
+function logoSVG(size){return `<svg width="${size}" height="${size}" viewBox="278 279 720 720" shape-rendering="crispEdges" aria-hidden="true" style="display:block"><rect x="278" y="279" width="720" height="720" fill="#051E1E"/><g fill="#ABF56A"><rect x="317" y="573" width="86" height="81"/><rect x="402" y="513" width="79" height="141"/><rect x="480" y="457" width="96" height="197"/><rect x="739" y="549" width="220" height="49"/><rect x="496" y="719" width="54" height="51"/><rect x="705" y="719" width="54" height="51"/><rect x="549" y="769" width="157" height="52"/></g></svg>`}
+$$('[data-logo]').forEach(el=>el.innerHTML=logoSVG(+el.dataset.logo));
+const IC={
+  trend:["........",".....###","......##","..#..#.#",".#.##...","#.......","........","########"],
+  bars:["......##","......##","...##.##","...##.##","##.##.##","##.##.##","##.##.##","........"],
+  plus:["...##...","...##...","...##...","########","########","...##...","...##...","...##..."],
+  book:["..####..",".##..##.",".....##.","....##..","...##...","...##...","........","...##..."],
+  x:["##....##",".##..##.","..####..","...##...","..####..",".##..##.","##....##","........"],
+  moon:["..####..",".#..###.","#...####","#...####","#...####",".#..###.","..####..","........"],
+  search:[".####...","#....#..","#....#..","#....#..",".####...","....##..",".....##.","......##"],
+  close:["##....##",".##..##.","..####..","...##...","..####..",".##..##.","##....##","........"]
+};
+function pxIcon(name,size){const g=IC[name];let r='';g.forEach((row,y)=>{let x=0;while(x<8){if(row[x]==='#'){let s=x;while(x<8&&row[x]==='#')x++;r+=`<rect x="${s}" y="${y}" width="${x-s}" height="1"/>`}else x++}});return `<svg width="${size}" height="${size}" viewBox="0 0 8 8" shape-rendering="crispEdges" fill="currentColor" aria-hidden="true" style="display:block">${r}</svg>`}
+$$('[data-ic]').forEach(el=>el.innerHTML=pxIcon(el.dataset.ic,+(el.dataset.s||24)));
+
+const TIERS=[{n:'Launch',c:'#86AB9C'},{n:'Bronze',c:'#D08A4E'},{n:'Silver',c:'#B6C8C2'},{n:'Gold',c:'#E9C83F'},{n:'Diamond',c:'#5FD8E8'},{n:'Infinite',c:'#8FD94E'}];
+const tierOf=n=>TIERS[Math.min(n,5)];
+const tierBadge=n=>`<span class="tier" style="--tc:${tierOf(n).c}">N${n}</span>`;
+function hash(s){let h=2166136261;for(const ch of String(s)){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function avatar(seed,size){size=size||36;const h=hash(seed);const hue=h%360;const fg=`hsl(${hue} 80% 64%)`,bg=`hsl(${(hue+200)%360} 34% 16%)`;let r='';for(let y=0;y<5;y++)for(let x=0;x<3;x++){if(hash(seed+':'+x+','+y)&1){r+=`<rect x="${x+1}" y="${y+1}" width="1" height="1"/>`;if(x<2)r+=`<rect x="${5-x}" y="${y+1}" width="1" height="1"/>`}}return `<svg class="av" width="${size}" height="${size}" viewBox="0 0 7 7" shape-rendering="crispEdges" aria-hidden="true"><rect width="7" height="7" fill="${bg}"/><g fill="${fg}">${r}</g></svg>`}
+function fmt(n){const a=Math.abs(n);if(a>=1e9)return '$'+(n/1e9).toFixed(2)+'B';if(a>=1e6)return '$'+(n/1e6).toFixed(2)+'M';if(a>=1e5)return '$'+(n/1e3).toFixed(0)+'K';if(a>=1e3)return '$'+(n/1e3).toFixed(1)+'K';if(a>=100)return '$'+n.toFixed(0);return '$'+n.toFixed(2)}
+function fmtP(m){const p=m/SUPPLY;if(p>=0.001)return '$'+p.toPrecision(3);const s=p.toExponential(2);const [mant,exp]=s.split('e');const z=-parseInt(exp,10)-1;return '$0.0'+String(z).split('').map(d=>'₀₁₂₃₄₅₆₇₈₉'[d]).join('')+mant.replace('.','')}
+function fmtPc(m){const p=m/SUPPLY;if(p>=0.001)return '$'+p.toPrecision(3);const s=p.toExponential(1);return '$'+s.replace('e-','e-')}
+function fmtN(n){if(n>=1e9)return (n/1e9).toFixed(2)+'B';if(n>=1e6)return (n/1e6).toFixed(2)+'M';if(n>=1e3)return (n/1e3).toFixed(1)+'K';return n.toFixed(0)}
+function fmtAge(h){if(h<1)return 'just now';if(h<24)return Math.floor(h)+'h old';return Math.floor(h/24)+'d old'}
+function ago(ts){const s=Math.max(1,Math.round((Date.now()-ts)/1000));return s<60?s+'s':Math.floor(s/60)+'m'}
+const ADJ=['Quiet','Lucky','Swift','Brave','Hidden','Solar','Cosmic','Patient','Witty','Golden','Rapid','Calm','Bold','Sleepy'];
+const COL=['Mint','Violet','Amber','Cobalt','Onyx','Coral','Jade','Ivory','Teal','Rust','Saffron','Slate'];
+const ANI=['Otter','Heron','Lynx','Mole','Gecko','Falcon','Badger','Koi','Marten','Ibis','Yak','Newt','Puffin','Tapir'];
+const trader=()=>pick(ADJ)+pick(COL)+pick(ANI);
+function fakeCA(s){const A='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';let h=hash(s),o='';for(let i=0;i<39;i++){h=(Math.imul(h^(h>>>13),2654435761)+i)>>>0;o+=A[h%A.length]}return o+'notch'}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+const S={tokens:[],sel:0,listTab:'trending',q:'',mode:'mcap',btab:'swaps',side:'buy',hover:null,wallet:null,feed:[],burnUSD:18420,lbSort:'growth',firstBuy:0,view:'trade',geo:null};
+
+function seedHist(t,N){
+  const start=10000,end=t.mcap;let walk=0,prevC=start;t.hist=[];
+  for(let i=1;i<=N;i++){
+    const fr=i/N;const k=Math.min(t.n,Math.floor(fr*(t.n+1)*0.999));
+    const f=LAUNCH_FLOOR*Math.pow(STEP,k);
+    walk+=(Math.random()-.5)*0.14;walk*=0.9;
+    let c=start*Math.pow(end/start,Math.pow(fr,0.8))*Math.exp(walk);if(i===N)c=end;
+    c=Math.max(c,f*1.03);
+    const o=prevC,h=Math.max(o,c)*(1+Math.random()*.04),l=Math.max(f*1.005,Math.min(o,c)*(1-Math.random()*.04));
+    t.hist.push({o,h,l,c,f,n:k});prevC=c;
+  }
+  t.cur={o:end,h:end,l:end,c:end,f:t.floorM,n:t.n,cnt:0};
+}
+function mkToken(name,ticker,ageH,mcap,n,desc,opts){
+  opts=opts||{};
+  const floor=LAUNCH_FLOOR*Math.pow(STEP,n);
+  const t={name,ticker,ageH,desc,n,floorM:floor,mcap:Math.max(mcap,floor*1.05),creator:opts.creator||trader(),lockedRes:floor*RES_RATIO,swaps:[],ca:fakeCA(ticker+name),firstBuy:opts.firstBuy||0,mine:!!opts.mine,x:opts.x||''};
+  t.reserve=t.lockedRes*(1+0.25*(opts.progress!=null?opts.progress:rnd(.35,.96)));
+  t.vol=opts.vol!=null?opts.vol:t.mcap*rnd(.15,.6);
+  t.buyVol=t.vol*rnd(.52,.62);t.sellVol=t.vol-t.buyVol;t.buys=Math.round(t.vol/rnd(60,140));t.sells=Math.round(t.buys*rnd(.5,.8));
+  t.holders=opts.holders!=null?opts.holders:Math.round(20+Math.sqrt(t.mcap)*0.8);
+  let left=rnd(18,32);t.top=[];for(let i=0;i<8;i++){const p=left*rnd(.18,.32);left-=p;t.top.push({who:trader(),pct:p})}
+  t.top.sort((a,b)=>b.pct-a.pct);
+  seedHist(t,opts.N||90);
+  return t;
+}
+const SEED=[
+  ['NOTCH','NOTCH',7*24,1.42e6,18,'The platform token. 0.5% of all volume on every NOTCH token buys $NOTCH back and burns it.',{x:'https://x.com/NotchPadDotFun',creator:'NotchPadDotFun'}],
+  ['Sol Gremlin','GREM',5*24,2.31e5,12,'A small green creature that lives inside validators and eats failed transactions.'],
+  ['Pixel Penguin','PIXL',3*24,8.8e4,9,'Eight-bit penguin, one-bit plan: waddle up the notches.'],
+  ['Lamport Larry','LARRY',4*24,4.1e4,6,'Larry counts every lamport. Twice.'],
+  ['Staircase','STAIR',2*24,3.3e4,4,'A token about stairs, for a launchpad about stairs.'],
+  ['Moon Mole','MOLE',30,2.2e4,3,'Digs down, floor goes up.'],
+  ['Validator Vic','VIC',12,1.6e4,2,'Vic signs every block with a thumbs up.'],
+  ['Byte Bun','BUN',6,1.25e4,1,'Freshly baked, one byte at a time.'],
+  ['Slow Snail','SNAIL',2,1.06e4,0,'It’ll get to the first notch eventually.']
+];
+SEED.forEach(a=>S.tokens.push(mkToken(...a)));
+for(let i=0;i<12;i++){const t=pick(S.tokens);S.feed.push({who:trader(),side:Math.random()<.55?'buy':'sell',usd:rnd(5,400),ticker:t.ticker,ts:Date.now()})}
+S.tokens.forEach(t=>{for(let i=0;i<14;i++)t.swaps.push({who:trader(),side:Math.random()<.56?'buy':'sell',usd:t.mcap*rnd(.0004,.004),tokens:0,mcap:t.mcap*rnd(.97,1.03),ts:Date.now()-i*rnd(4000,20000)});t.swaps.forEach(s=>s.tokens=s.usd/(s.mcap/SUPPLY))});
+const cur=()=>S.tokens[S.sel];
+
+/* ---------- trading model ---------- */
+function trade(t,side,usd,who){
+  const buy=side==='buy';
+  let m=t.mcap*(1+(buy?1:-1)*usd/(t.mcap*0.08));
+  if(m<t.floorM*1.005)m=t.floorM*1.005;
+  const priceBefore=t.mcap/SUPPLY;
+  t.mcap=m;t.reserve+=usd*0.015;S.burnUSD+=usd*0.005;t.vol+=usd;
+  if(buy){t.buyVol+=usd;t.buys++;if(Math.random()<.3)t.holders++}else{t.sellVol+=usd;t.sells++;if(Math.random()<.12)t.holders=Math.max(1,t.holders-1)}
+  const tokens=buy?usd*0.97/((priceBefore+m/SUPPLY)/2):usd/priceBefore;
+  const sw={who,side,usd,tokens,mcap:m,ts:Date.now(),ticker:t.ticker,you:who==='You'};
+  t.swaps.unshift(sw);if(t.swaps.length>40)t.swaps.length=40;
+  S.feed.unshift(sw);if(S.feed.length>14)S.feed.length=14;
+  const c=t.cur;c.c=m;c.h=Math.max(c.h,m);c.l=Math.min(c.l,m);c.cnt++;
+  let up=0;while(t.reserve>=t.lockedRes*1.25){t.lockedRes*=1.25;t.floorM*=STEP;t.n++;up++}
+  if(up){if(t.mcap<t.floorM*1.02){t.mcap=t.floorM*1.02;c.c=t.mcap;c.h=Math.max(c.h,t.mcap)}notchToast(t)}
+  c.f=t.floorM;c.n=t.n;
+  if(c.cnt>=5){t.hist.push({o:c.o,h:c.h,l:c.l,c:c.c,f:c.f,n:c.n});if(t.hist.length>160)t.hist.shift();t.cur={o:t.mcap,h:t.mcap,l:t.mcap,c:t.mcap,f:t.floorM,n:t.n,cnt:0}}
+  return sw;
+}
+function notchToast(t){const tr=tierOf(t.n);toast(`<b>$${t.ticker}</b> unlocked <span class="tier" style="--tc:${tr.c}">N${t.n} ${tr.n}</span>. Floor locked at <b class="fl">${fmt(t.floorM)}</b>.`)}
+function toast(html){const el=document.createElement('div');el.className='toast';el.innerHTML=html;$('#toasts').prepend(el);setTimeout(()=>el.remove(),5200);const all=$$('#toasts .toast');if(all.length>3)all[all.length-1].remove()}
+
+/* ---------- ticker ---------- */
+let lastFeedTs=0;
+function renderTicker(){
+  $('#ticker').innerHTML=S.feed.slice(0,10).map(f=>`<span class="chip${f.ts>lastFeedTs?' new':''}">${avatar(f.who,20)}<span>${f.you?'<b>You</b>':f.who}</span><span class="${f.side==='buy'?'up':'down'}">${f.side==='buy'?'bought':'sold'} ${fmt(f.usd)}</span><span class="muted">of</span>${avatar(f.ticker,18)}<b>$${f.ticker}</b></span>`).join('');
+  lastFeedTs=S.feed[0]?S.feed[0].ts:0;
+  $('#burnStat').textContent=fmt(S.burnUSD);
+}
+
+/* ---------- list ---------- */
+const prog=t=>Math.max(0,Math.min(1,(t.reserve-t.lockedRes)/(t.lockedRes*0.25)));
+function renderList(){
+  let arr=S.tokens.map((t,i)=>({t,i}));
+  const q=S.q.trim().toLowerCase();
+  if(q)arr=arr.filter(({t})=>t.name.toLowerCase().includes(q)||t.ticker.toLowerCase().includes(q));
+  const k={trending:a=>-a.t.vol,near:a=>-prog(a.t),new:a=>a.t.ageH,floor:a=>-a.t.floorM}[S.listTab];
+  arr.sort((a,b)=>k(a)-k(b));
+  $('#toklist').innerHTML=arr.length?arr.map(({t,i})=>`<button class="tok${i===S.sel?' on':''}" data-i="${i}">${t.ticker==='NOTCH'?logoSVG(40):avatar(t.ticker+t.name,40)}<div class="tok-main"><div class="tok-name">${esc(t.name)}<span class="tk">$${t.ticker}</span></div><div class="tok-sub">${tierBadge(t.n)}<span class="prog" title="Progress to next notch"><i style="width:${(prog(t)*100).toFixed(0)}%"></i></span>${fmtAge(t.ageH)}</div></div><div class="tok-num">${fmt(t.mcap)}<small>${fmt(t.floorM)} floor</small></div></button>`).join(''):`<p class="muted" style="padding:10px;font-size:15px">No token matches “${esc(S.q)}”. Try a ticker like GREM, or launch it yourself.</p>`;
+}
+
+/* ---------- token page ---------- */
+const tokAv=(t,s)=>t.ticker==='NOTCH'?logoSVG(s):avatar(t.ticker+t.name,s);
+function renderHead(){
+  const t=cur();
+  $('#hAv').innerHTML=tokAv(t,56);
+  $('#hName').textContent=t.name;$('#hTick').textContent='$'+t.ticker;
+  $('#hTier').innerHTML=tierBadge(t.n);
+  $('#hAge').textContent=fmtAge(t.ageH);
+  $('#hCa').textContent=t.ca.slice(0,4)+'…'+t.ca.slice(-6);
+  $('#hCreator').innerHTML='by '+(t.mine?'<b>you</b>':esc(t.creator))+(t.x?` <a href="${esc(t.x)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;vertical-align:middle;color:var(--text)" aria-label="X profile">${pxIcon('x',14)}</a>`:'');
+  $('#sMcap').textContent=fmt(t.mcap);$('#sFloor').textContent=fmt(t.floorM);$('#sPrice').textContent=fmtP(t.mcap);$('#sRes').textContent=fmt(t.reserve);
+}
+function renderTracker(){
+  const t=cur(),tr=tierOf(t.n),next=t.lockedRes*1.25,need=Math.max(0,next-t.reserve),p=prog(t);
+  const nextTier=tierOf(t.n+1);
+  const rungs=[0,1,2,3,4,5].map(i=>{const T=TIERS[i];const lab=i===5?'N5+':'N'+i;const done=i<5?t.n>i:false;const now=i<5?t.n===i:t.n>=5;return `<div class="rung${done?' done':''}${now?' now':''}" style="--tc:${T.c}"><b>${lab}</b>${T.n}</div>`}).join('');
+  $('#tracker').innerHTML=`<div class="badge" style="--tc:${tr.c}"><div><b>N${t.n}</b><br><span>${tr.n}</span></div></div>
+  <div><div class="tr-title">Notch tracker</div>
+  <div class="muted" style="font-size:15px">Floor locked at <b class="fl">${fmt(t.floorM)}</b>. Next notch raises it to <b class="fl">${fmt(t.floorM*STEP)}</b>${t.n<4?` and earns <b style="color:${nextTier.c}">${nextTier.n}</b>`:''}.</div>
+  <div class="bar" role="progressbar" aria-valuenow="${Math.round(p*100)}" aria-valuemin="0" aria-valuemax="100" aria-label="Reserve progress to next notch"><i style="width:${(p*100).toFixed(1)}%"></i></div>
+  <div style="display:flex;justify-content:space-between;font-size:14px;flex-wrap:wrap;gap:6px"><span>Reserve ${fmt(t.reserve)} of ${fmt(next)}</span><span class="muted">${fmt(need)} to go, about ${fmt(need/0.015)} of trading volume</span></div></div>
+  <div class="ladder">${rungs}</div>`;
+}
+function renderBottom(newest){
+  const t=cur();let h='';
+  if(S.btab==='swaps'){
+    h=`<div class="row h"><span>Trader</span><span>Side</span><span class="r">Value</span><span class="r hide-s">Tokens</span><span class="r hide-s">Age</span></div>`+t.swaps.slice(0,14).map((s,i)=>`<div class="row${s.you?' you':''}${i===0&&newest?' fresh':''}"><span class="who">${avatar(s.who,22)}<span>${s.you?'<b>You</b>':s.who}</span></span><span class="${s.side==='buy'?'up':'down'}">${s.side==='buy'?'Buy':'Sell'}</span><span class="r">${fmt(s.usd)}</span><span class="r hide-s">${fmtN(s.tokens)}</span><span class="r hide-s muted">${ago(s.ts)}</span></div>`).join('');
+  }else if(S.btab==='holders'){
+    const rows=[{who:'Floor reserve',pct:null}].concat(t.top);
+    if(S.wallet&&S.wallet.hold[t.ticker])rows.push({who:'You',pct:S.wallet.hold[t.ticker]/SUPPLY*100,you:true});
+    h=`<div class="row h"><span>Holder</span><span>Share</span><span class="r">Value</span><span class="r hide-s">Floor value</span><span class="r hide-s"></span></div>`+rows.map(r=>r.pct==null?`<div class="row"><span class="who"><span class="fl" style="font-weight:600">Floor reserve</span></span><span class="muted">backing</span><span class="r">${fmt(t.reserve)}</span><span class="r hide-s muted">locked</span><span class="r hide-s"></span></div>`:`<div class="row${r.you?' you':''}"><span class="who">${avatar(r.who,22)}<span>${r.you?'<b>You</b>':r.who}</span></span><span>${r.pct.toFixed(2)}%</span><span class="r">${fmt(t.mcap*r.pct/100)}</span><span class="r hide-s fl">${fmt(t.floorM*r.pct/100)}</span><span class="r hide-s"></span></div>`).join('')+`<p class="muted" style="font-size:14px;margin:10px 6px 0">${t.holders} holders. Floor value is what a holding redeems for at the current floor.</p>`;
+  }else{
+    const ev=[];let prev=0;t.hist.concat([t.cur]).forEach((d,i)=>{if(d.n>prev){ev.push({n:d.n,f:d.f,i});prev=d.n}});
+    h=ev.length?`<div class="row h"><span>Notch</span><span>Level</span><span class="r">Floor locked</span><span class="r hide-s">Growth</span><span class="r hide-s"></span></div>`+ev.reverse().slice(0,14).map(e=>`<div class="row"><span>${tierBadge(e.n)}</span><span>${tierOf(e.n).n}</span><span class="r fl">${fmt(e.f)}</span><span class="r hide-s">${(e.f/LAUNCH_FLOOR).toFixed(1)}×</span><span class="r hide-s"></span></div>`).join(''):`<p class="muted" style="padding:6px;font-size:15px">No notches yet. The first unlocks when the reserve reaches ${fmt(t.lockedRes*1.25)}.</p>`;
+  }
+  $('#bottom').innerHTML=h;
+}
+function renderFlow(){
+  const t=cur(),tot=t.buyVol+t.sellVol||1;
+  $('#flow').innerHTML=`<div class="two"><span>Buy volume<b class="up">${fmt(t.buyVol)}</b></span><span style="text-align:right">Sell volume<b class="down">${fmt(t.sellVol)}</b></span></div>
+  <div class="split"><i style="flex:${t.buyVol/tot};background:var(--up)"></i><i style="flex:${t.sellVol/tot};background:var(--down)"></i></div>
+  <div class="two"><span>Buys<b>${t.buys}</b></span><span style="text-align:right">Sells<b>${t.sells}</b></span></div>
+  <div class="split"><i style="flex:${t.buys||1};background:var(--up)"></i><i style="flex:${t.sells||1};background:var(--down)"></i></div>
+  <div class="two"><span>Floor since launch<b class="fl">${(t.floorM/LAUNCH_FLOOR).toFixed(2)}×</b></span><span style="text-align:right">Price over floor<b>${((t.mcap/t.floorM-1)*100).toFixed(0)}%</b></span></div>`;
+}
+function renderAbout(){
+  const t=cur();
+  $('#about').innerHTML=`<b>About $${t.ticker}</b><p>${esc(t.desc||'No description yet.')}</p>
+  ${t.x?`<a class="btn" style="margin:0 0 12px" href="${esc(t.x)}" target="_blank" rel="noopener noreferrer">${pxIcon('x',14)}Follow on X</a>`:''}
+  <div class="sig"><i class="dot" style="background:var(--up)"></i><span>Liquidity is protocol-controlled. The creator can’t withdraw it.</span></div>
+  <div class="sig"><i class="dot" style="background:var(--up)"></i><span>Floor reserve holds ${fmt(t.reserve)}, enough for the locked floor.</span></div>
+  <div class="sig"><i class="dot" style="background:${t.firstBuy?'var(--floor)':'var(--up)'}"></i><span>${t.firstBuy?`Creator first buy: ${t.firstBuy}% of supply at launch.`:'No creator first buy at launch.'}</span></div>
+  <div class="sig"><i class="dot" style="background:${t.ticker==='NOTCH'?'var(--up)':'var(--down)'}"></i><span>${t.ticker==='NOTCH'?'Official address published by @NotchPadDotFun.':'Website not verified by the creator.'}</span></div>`;
+}
+
+/* ---------- swap panel ---------- */
+function renderPresets(){
+  const buy=S.side==='buy';
+  $('#payLbl').textContent=buy?'You pay':'You sell';
+  $('#amtUnit').textContent=buy?'SOL':'$'+cur().ticker;
+  $('#presets').innerHTML=(buy?['0.1','0.5','1','5'].map(v=>`<button data-v="${v}">${v} SOL</button>`):['25','50','75','100'].map(v=>`<button data-pct="${v}">${v}%</button>`)).join('');
+}
+function updateSwap(){
+  const t=cur(),buy=S.side==='buy',a=parseFloat($('#amt').value)||0;const price=t.mcap/SUPPLY;
+  const usd=buy?a*SOL:a*price;
+  $('#recv').textContent=a?(buy?fmtN(usd*0.97/price)+' $'+t.ticker:(usd*0.97/SOL).toFixed(3)+' SOL'):'—';
+  $('#fees').innerHTML=`<span>Floor reserve, 1.5%</span><span>${fmt(usd*.015)}</span><span>$NOTCH burn, 0.5%</span><span>${fmt(usd*.005)}</span><span>Creator, 0.5%</span><span>${fmt(usd*.005)}</span><span>Treasury, 0.5%</span><span>${fmt(usd*.005)}</span>`;
+  const btn=$('#swapBtn');
+  if(!S.wallet){btn.textContent='Connect wallet';btn.disabled=false}
+  else if(!a){btn.textContent='Enter an amount';btn.disabled=true}
+  else if(buy&&a>S.wallet.sol){btn.textContent='Not enough SOL';btn.disabled=true}
+  else if(!buy&&a>(S.wallet.hold[t.ticker]||0)+1e-6){btn.textContent='Not enough $'+t.ticker;btn.disabled=true}
+  else{btn.textContent=(buy?'Buy $':'Sell $')+t.ticker;btn.disabled=false}
+  const held=S.wallet?S.wallet.hold[t.ticker]||0:0;
+  $('#bag').innerHTML=S.wallet?`<div class="bag"><span>Wallet balance</span><span>${S.wallet.sol.toFixed(3)} SOL</span><span>Your $${t.ticker}</span><span>${fmtN(held)}</span>${held?`<span>Market value</span><span>${fmt(held*price)}</span><span class="fl">Floor value</span><span class="fl">${fmt(held*t.floorM/SUPPLY)}</span>`:''}</div>`:'';
+  $('#walletBtn').textContent=S.wallet?`${S.wallet.name} ${S.wallet.sol.toFixed(2)} SOL`:'Connect wallet';
+}
+function doSwap(){
+  if(!S.wallet){openM('wallet');return}
+  const t=cur(),buy=S.side==='buy',a=parseFloat($('#amt').value)||0;if(!a)return;
+  if(buy){const sw=trade(t,'buy',a*SOL,'You');S.wallet.sol-=a;S.wallet.hold[t.ticker]=(S.wallet.hold[t.ticker]||0)+sw.tokens;toast(`Bought <b>${fmtN(sw.tokens)} $${t.ticker}</b> for ${a} SOL. <span class="fl">${fmt(a*SOL*.015)}</span> went into the floor reserve.`)}
+  else{const usd=a*t.mcap/SUPPLY;trade(t,'sell',usd,'You');S.wallet.hold[t.ticker]-=a;if(S.wallet.hold[t.ticker]<1)delete S.wallet.hold[t.ticker];S.wallet.sol+=usd*.97/SOL;toast(`Sold <b>${fmtN(a)} $${t.ticker}</b> for ${(usd*.97/SOL).toFixed(3)} SOL.`)}
+  $('#amt').value='';refresh(t,true);
+}
+
+/* ---------- pixel chart ---------- */
+const cv=$('#chart');const P=2;
+function cssv(k){return getComputedStyle(document.documentElement).getPropertyValue(k).trim()}
+function chartData(){const t=cur();const d=t.hist.slice();if(t.cur&&t.cur.cnt)d.push(t.cur);return d.slice(-90)}
+function drawChart(){
+  if(S.view!=='trade')return;
+  const wrap=cv.parentElement,Wc=wrap.clientWidth,Hc=wrap.clientHeight;if(!Wc||!Hc)return;
+  const W=Math.floor(Wc/P),H=Math.floor(Hc/P);cv.width=W;cv.height=H;
+  const g=cv.getContext('2d');g.imageSmoothingEnabled=false;g.clearRect(0,0,W,H);
+  const C={line:cssv('--line'),muted:cssv('--muted'),floor:cssv('--floor'),up:cssv('--up'),down:cssv('--down'),panel:cssv('--panel'),bg:cssv('--bg')};
+  const data=chartData();const t=cur();
+  const padR=46,padT=10,padB=3,cw=W-padR,ch=H-padT-padB;
+  let lo=Infinity,hi=-Infinity;data.forEach(d=>{lo=Math.min(lo,d.l,d.f);hi=Math.max(hi,d.h)});
+  lo*=0.8;hi*=1.1;const L=Math.log,y=v=>Math.round(padT+ch*(1-(L(v)-L(lo))/(L(hi)-L(lo))));
+  const step=cw/data.length,X=i=>Math.round(i*step);
+  const lab=v=>S.mode==='mcap'?fmt(v):fmtPc(v);
+  g.font='8px '+PF;g.textBaseline='middle';
+  for(let k=0;k<=4;k++){const v=Math.exp(L(lo)+(L(hi)-L(lo))*(k+.5)/5);const yy=y(v);g.fillStyle=C.line;for(let xx=0;xx<cw;xx+=4)g.fillRect(xx,yy,2,1);g.fillStyle=C.muted;g.fillText(lab(v),cw+4,yy)}
+  // dithered floor area
+  const pc=document.createElement('canvas');pc.width=pc.height=4;const pg=pc.getContext('2d');pg.fillStyle=C.floor;pg.globalAlpha=.55;pg.fillRect(0,0,1,1);pg.fillRect(2,2,1,1);
+  g.fillStyle=g.createPattern(pc,'repeat');
+  data.forEach((d,i)=>{const yy=y(d.f);g.fillRect(X(i),yy,X(i+1)-X(i),padT+ch-yy)});
+  // floor line (2px chunky steps)
+  g.fillStyle=C.floor;
+  data.forEach((d,i)=>{const yy=y(d.f);g.fillRect(X(i),yy-1,X(i+1)-X(i),3);if(i>0&&data[i-1].f!==d.f){const yp=y(data[i-1].f);g.fillRect(X(i)-1,Math.min(yy,yp)-1,3,Math.abs(yp-yy)+3)}});
+  // notch markers
+  let lastMarkX=-99;
+  data.forEach((d,i)=>{if(i>0&&d.n>data[i-1].n){const xx=X(i),yy=y(d.f);if(xx-lastMarkX>18){const txt='N'+d.n,tw=Math.ceil(g.measureText(txt).width)+6,bx=Math.max(0,xx-(tw>>1)),by=yy-15;g.fillStyle=C.floor;g.fillRect(bx,by,tw,11);g.fillStyle=C.bg;g.fillText(txt,bx+3,by+6);lastMarkX=xx}}});
+  // candles
+  const bw=Math.max(1,Math.floor(step*0.6));
+  data.forEach((d,i)=>{const upC=d.c>=d.o;g.fillStyle=upC?C.up:C.down;const xx=Math.round(i*step+step/2);g.fillRect(xx,y(d.h),1,Math.max(1,y(d.l)-y(d.h)));const y1=y(Math.max(d.o,d.c)),y2=y(Math.min(d.o,d.c));g.fillRect(xx-(bw>>1),y1,bw,Math.max(1,y2-y1))});
+  // current price dotted line + tags
+  const last=data[data.length-1],pcol=last.c>=last.o?C.up:C.down,yp=y(t.mcap);
+  g.fillStyle=pcol;for(let xx=0;xx<cw;xx+=4)g.fillRect(xx,yp,2,1);
+  const tag=(v,bg)=>{const yy=y(v);g.fillStyle=bg;g.fillRect(cw+1,yy-6,padR-1,12);g.fillStyle=C.bg;g.fillText(lab(v),cw+4,yy)};
+  tag(t.floorM,C.floor);tag(t.mcap,pcol);
+  if(S.hover!=null&&data[S.hover]){const xx=Math.round(S.hover*step+step/2);g.fillStyle=C.muted;for(let yy=padT;yy<padT+ch;yy+=4)g.fillRect(xx,yy,1,2)}
+  S.geo={step,n:data.length};
+  renderOHLC(data);
+}
+function renderOHLC(data){
+  const d=data[S.hover!=null&&data[S.hover]?S.hover:data.length-1];if(!d)return;
+  const lab=v=>S.mode==='mcap'?fmt(v):fmtP(v);const chg=(d.c/d.o-1)*100;
+  $('#ohlc').innerHTML=`<span>O <b>${lab(d.o)}</b></span><span>H <b>${lab(d.h)}</b></span><span>L <b>${lab(d.l)}</b></span><span>C <b>${lab(d.c)}</b></span><span class="${chg>=0?'up':'down'}">${chg>=0?'+':''}${chg.toFixed(1)}%</span><span>Floor <b class="fl">${lab(d.f)}</b></span>`;
+}
+cv.addEventListener('pointermove',e=>{if(!S.geo)return;const r=cv.getBoundingClientRect();const i=Math.floor((e.clientX-r.left)/P/S.geo.step);S.hover=(i>=0&&i<S.geo.n)?i:null;drawChart()});
+cv.addEventListener('pointerleave',()=>{S.hover=null;drawChart()});
+new ResizeObserver(()=>drawChart()).observe(cv.parentElement);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>drawChart());
+
+/* ---------- leaderboard ---------- */
+function renderLB(){
+  const key={growth:t=>t.floorM,n:t=>t.n*1e12+t.reserve,reserve:t=>t.reserve,vol:t=>t.vol}[S.lbSort];
+  const arr=S.tokens.map((t,i)=>({t,i})).sort((a,b)=>key(b.t)-key(a.t));
+  const maxG=Math.max(...S.tokens.map(t=>Math.log(t.floorM/LAUNCH_FLOOR)+.01));
+  $('#lbBody').innerHTML=arr.map(({t,i},r)=>`<tr data-i="${i}" tabindex="0"><td class="rank">${r+1}</td><td><span class="tcell">${tokAv(t,32)}<span>${esc(t.name)} <small>$${t.ticker}</small></span></span></td><td>${tierBadge(t.n)} <span class="muted" style="font-size:14px">${tierOf(t.n).n}</span></td><td class="fl">${fmt(t.floorM)}</td><td>${(t.floorM/LAUNCH_FLOOR).toFixed(1)}×<span class="growbar"><i style="width:${(Math.log(t.floorM/LAUNCH_FLOOR)+.01)/maxG*100}%"></i></span></td><td>${fmt(t.reserve)}</td><td><span class="prog" style="width:60px;vertical-align:middle"><i style="width:${(prog(t)*100).toFixed(0)}%"></i></span> <span class="muted">${(prog(t)*100).toFixed(0)}%</span></td><td>${fmt(t.mcap)}</td><td>${fmt(t.vol)}</td></tr>`).join('');
+}
+
+/* ---------- refresh & loop ---------- */
+function renderToken(){renderHead();renderTracker();renderFlow();renderAbout();updateSwap();drawChart()}
+function renderAll(){renderList();renderToken();renderBottom();renderPresets();updateSwap()}
+function refresh(t,newest){
+  renderTicker();
+  if(S.view==='trade'){renderList();if(t===cur()){renderToken();renderBottom(newest)}}
+  else if(S.view==='leaderboard')renderLB();
+}
+function tick(){
+  if(!document.hidden){
+    const sel=cur();const t=Math.random()<.55?sel:pick(S.tokens);
+    const buy=Math.random()<(t.mcap<t.floorM*1.3?0.68:0.54);
+    const usd=t.mcap*rnd(.0004,.005)*(Math.random()<.08?6:1);
+    trade(t,buy?'buy':'sell',usd,trader());
+    refresh(t,true);
+  }
+  setTimeout(tick,rnd(800,1600));
+}
+
+/* ---------- routing ---------- */
+const VIEWS=['trade','leaderboard','how'];
+function route(){
+  const h=location.hash.slice(1);const v=VIEWS.includes(h)?h:'trade';S.view=v;
+  $$('.view').forEach(el=>el.hidden=el.id!=='v-'+v);
+  $$('[data-nav]').forEach(b=>b.classList.toggle('on',b.dataset.nav===v));
+  if(v==='trade')renderAll();if(v==='leaderboard')renderLB();
+  window.scrollTo(0,0);
+}
+addEventListener('hashchange',route);
+function selectToken(i){S.sel=i;S.hover=null;$('#amt').value='';renderAll()}
+
+/* ---------- events ---------- */
+$('#toklist').addEventListener('click',e=>{const b=e.target.closest('.tok');if(b)selectToken(+b.dataset.i)});
+$('#listTabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;S.listTab=b.dataset.t;$$('#listTabs .tab').forEach(x=>x.classList.toggle('on',x===b));renderList()});
+$('#q').addEventListener('input',e=>{S.q=e.target.value;renderList()});
+$('#bTabs').addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;S.btab=b.dataset.b;$$('#bTabs .tab').forEach(x=>x.classList.toggle('on',x===b));renderBottom()});
+$('#modeSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.mode=b.dataset.m;$$('#modeSeg button').forEach(x=>x.classList.toggle('on',x===b));drawChart()});
+$('#sideSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.side=b.dataset.side;$$('#sideSeg button').forEach(x=>x.classList.toggle('on',x===b));$('#amt').value='';renderPresets();updateSwap()});
+$('#presets').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.v)$('#amt').value=b.dataset.v;else{if(!S.wallet){openM('wallet');return}const held=S.wallet.hold[cur().ticker]||0;$('#amt').value=held?Math.floor(held*b.dataset.pct/100):''}updateSwap()});
+$('#amt').addEventListener('input',updateSwap);
+$('#swapBtn').addEventListener('click',doSwap);
+$('#hCa').addEventListener('click',()=>{const ca=cur().ca;try{navigator.clipboard.writeText(ca).then(()=>toast('Demo contract address copied.'),()=>toast(ca))}catch(_){toast(ca)}});
+$('#lbSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.lbSort=b.dataset.s;$$('#lbSeg button').forEach(x=>x.classList.toggle('on',x===b));renderLB()});
+$('#lbBody').addEventListener('click',e=>{const r=e.target.closest('tr');if(r){S.sel=+r.dataset.i;location.hash='trade'}});
+$('#lbBody').addEventListener('keydown',e=>{if(e.key==='Enter'){const r=e.target.closest('tr');if(r){S.sel=+r.dataset.i;location.hash='trade'}}});
+$('#walletBtn').addEventListener('click',()=>{if(S.wallet){toast(`Simulated wallet: ${S.wallet.sol.toFixed(3)} SOL. Nothing here is real.`)}else openM('wallet')});
+$('#themeBtn').addEventListener('click',()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'light':'dark';try{localStorage.setItem('notch-theme',r.dataset.theme)}catch(_){}drawChart();buildHow()});
+try{const th=localStorage.getItem('notch-theme');if(th)document.documentElement.dataset.theme=th}catch(_){}
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{drawChart();buildHow()});
+
+/* modals */
+let lastFocus=null;
+function openM(id){lastFocus=document.activeElement;const m=$('#m-'+id);m.hidden=false;const f=m.querySelector('input,button.wl,button');if(f)f.focus();if(id==='launch')launchPreview()}
+function closeM(m){m.hidden=true;if(lastFocus)lastFocus.focus()}
+$$('[data-open]').forEach(b=>b.addEventListener('click',()=>openM(b.dataset.open)));
+$$('.scrim').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m||e.target.closest('[data-close]'))closeM(m)})});
+addEventListener('keydown',e=>{if(e.key==='Escape')$$('.scrim').forEach(m=>{if(!m.hidden)closeM(m)})});
+
+const WALLETS=[['Phantom','#7C5CE0'],['Solflare','#E4932D'],['Backpack','#D9434E'],['Glow','#3A8FD6'],['Coinbase','#2E62D9'],['WalletConnect','#3396C9']];
+$('#wallets').innerHTML=WALLETS.map(([n,c])=>`<button class="wl" data-w="${n}"><i style="background:${c}">${n[0]}</i>${n}</button>`).join('');
+$('#wallets').addEventListener('click',e=>{const b=e.target.closest('.wl');if(!b)return;S.wallet={name:b.dataset.w,sol:25,hold:{}};closeM($('#m-wallet'));updateSwap();toast(`Simulated <b>${b.dataset.w}</b> wallet ready with 25 SOL. No real wallet is connected.`)});
+
+/* launch */
+function launchPreview(){const n=$('#lName').value||'Token',tk=($('#lTick').value||'TICKER').replace(/^\$/,'');$('#lAv').innerHTML=avatar(tk.toUpperCase()+n,80)}
+$('#lName').addEventListener('input',launchPreview);
+$('#lTick').addEventListener('input',e=>{let v=e.target.value.toUpperCase().replace(/[^A-Z0-9$]/g,'');if(v&&v[0]!=='$')v='$'+v;e.target.value=v.replace(/(?!^)\$/g,'');launchPreview();const tk=e.target.value.slice(1);$('#lWarn').textContent=S.tokens.some(t=>t.ticker===tk)?`$${tk} already exists on NOTCH. You can still launch; buyers tell tokens apart by creator and contract address.`:''});
+$('#lLinks').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;b.classList.toggle('on');$('#l'+b.dataset.l).classList.toggle('show')});
+$('#pairSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$$('#pairSeg button').forEach(x=>x.classList.toggle('on',x===b))});
+$('#fbSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.firstBuy=+b.dataset.p;$$('#fbSeg button').forEach(x=>x.classList.toggle('on',x===b))});
+$('#lGo').addEventListener('click',()=>{
+  const name=$('#lName').value.trim(),tk=$('#lTick').value.replace('$','').trim();
+  if(!name||!tk){$('#lWarn').textContent='Add a token name and a ticker to launch.';($('#lName').value?$('#lTick'):$('#lName')).focus();return}
+  const mc=10000*(1+S.firstBuy*0.06);
+  const xl=$('#lx').value.trim();
+  const t=mkToken(name,tk,0,mc,0,$('#lDesc').value.trim(),{creator:'You',mine:true,firstBuy:S.firstBuy,progress:0,vol:0,holders:1+(S.firstBuy?1:0),N:6,x:/^https:\/\/(x|twitter)\.com\//.test(xl)?xl:''});
+  t.buyVol=t.sellVol=t.buys=t.sells=0;t.swaps=[];t.top=S.firstBuy?[{who:'You',pct:S.firstBuy}]:[];
+  if(S.firstBuy){const usd=SUPPLY*S.firstBuy/100*(mc/SUPPLY);t.vol=usd;t.buyVol=usd;t.buys=1;t.reserve+=usd*.015;t.swaps.push({who:'You',side:'buy',usd,tokens:SUPPLY*S.firstBuy/100,mcap:mc,ts:Date.now(),you:true})}
+  S.tokens.push(t);
+  ['lName','lTick','lDesc','lx','ltg','lweb'].forEach(id=>$('#'+id).value='');$('#lWarn').textContent='';
+  closeM($('#m-launch'));S.sel=S.tokens.length-1;
+  if(S.view==='trade')renderAll();else location.hash='trade';
+  toast(`Launched <b>$${t.ticker}</b> at N0 with a floor reserve of ${fmt(t.reserve)}. This is a simulation.`);
+});
+
+/* ---------- How it works visuals (pixel SVG) ---------- */
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const snap=(v,g)=>Math.round(v/g)*g;
+function stairPath(pts,g){let d='';pts.forEach(([x,y],i)=>{x=snap(x,g);y=snap(y,g);d+=i?`H${x}V${y}`:`M${x},${y}`});return d}
+function dither(id,col){return `<pattern id="${id}" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="2" height="2" fill="${col}" opacity=".6"/><rect x="3" y="3" width="2" height="2" fill="${col}" opacity=".6"/></pattern>`}
+function stepSVG(opts){
+  const W=opts.W||640,H=opts.H||300,R=mulberry(opts.seed||7),N=opts.N||140,notches=opts.notches||6,G=opts.G||6;
+  const fl=cssv('--floor'),up=cssv('--up'),mut=cssv('--muted'),ln=cssv('--line'),bg=cssv('--bg');
+  const price=[],floor=[];let w=0;
+  for(let i=0;i<N;i++){const fr=i/(N-1);const k=Math.floor(Math.pow(fr,0.85)*(notches+0.999));const f=Math.pow(1.6,k);w+=(R()-.5)*.22;w*=.9;let p=Math.pow(1.6,(notches+.8)*Math.pow(fr,.7))*Math.exp(w)*1.4;p=Math.max(p,f*1.12);price.push(p);floor.push(f)}
+  const lo=0.75,hi=Math.max(...price)*1.15,L=Math.log,px=i=>18+i/(N-1)*(W-36),py=v=>H-30-(L(v)-L(lo))/(L(hi)-L(lo))*(H-60);
+  const fpts=floor.map((f,i)=>[px(i),py(f)]);const fp=stairPath(fpts,G);
+  const area=fp+`V${snap(H-30,G)}H${snap(px(0),G)}Z`;
+  const pp=stairPath(price.map((p,i)=>[px(i),py(p)]),G);
+  let marks='';let kk=0;for(let i=1;i<N;i++){if(floor[i]>floor[i-1]){kk++;const x=snap(px(i),G),y=snap(py(floor[i]),G);marks+=`<rect x="${x-15}" y="${y-28}" width="30" height="18" fill="${fl}"/><text x="${x}" y="${y-15}" text-anchor="middle" font-size="11" fill="${bg}">N${kk}</text>`}}
+  const id='d'+(opts.seed||7);
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${opts.label||'Market price above a stepped floor that rises with each notch'}" font-family="${PF}" shape-rendering="crispEdges"><defs>${dither(id,fl)}</defs>
+  <rect x="18" y="${H-30}" width="${W-36}" height="3" fill="${ln}"/>
+  <path d="${area}" fill="url(#${id})"/><path d="${pp}" fill="none" stroke="${up}" stroke-width="3"/>
+  <path d="${fp}" fill="none" stroke="${fl}" stroke-width="6"/>${marks}
+  <text x="18" y="${H-8}" font-size="11" fill="${mut}">Launch</text><text x="${W-18}" y="${H-8}" font-size="11" fill="${mut}" text-anchor="end">${opts.endLabel||'Trades over time'}</text></svg>`;
+}
+function dumpSVG(){
+  const W=640,H=280,G=6,fl=cssv('--floor'),up=cssv('--up'),dn=cssv('--down'),mut=cssv('--muted'),ln=cssv('--line'),bg=cssv('--bg');
+  const R=mulberry(3);let pts=[],x=18,p=60;
+  for(let i=0;i<30;i++){p+=(R()-.45)*14;pts.push([x,p]);x+=8}
+  const cut=snap(x,G);const floorY=210;const fall=[];
+  for(let i=0;i<14;i++){x+=6;p=p+(floorY-p)*0.45;fall.push([x,p])}
+  const d1=stairPath(pts,G),d2=stairPath([[cut,snap(pts[pts.length-1][1],G)]].concat(fall),G);
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Sell-off: the market price drops and stops at the floor" font-family="${PF}" shape-rendering="crispEdges"><defs>${dither('dd',dn)}</defs>
+  <rect x="${cut}" y="12" width="${W-18-cut}" height="${H-48}" fill="url(#dd)" opacity=".5"/>
+  <text x="${cut+10}" y="32" font-size="11" fill="${dn}">Everyone sells</text>
+  <rect x="18" y="${floorY+3}" width="${cut-18}" height="6" fill="${fl}"/><rect x="${cut}" y="${floorY}" width="${W-18-cut}" height="6" fill="${fl}"/>
+  <path d="${d1}" fill="none" stroke="${up}" stroke-width="3"/><path d="${d2}H${W-18}" fill="none" stroke="${dn}" stroke-width="3"/>
+  <rect x="${W-150}" y="${floorY-30}" width="132" height="20" fill="${fl}"/><text x="${W-84}" y="${floorY-16}" text-anchor="middle" font-size="11" fill="${bg}">Floor holds</text>
+  <rect x="18" y="${H-36}" width="${W-36}" height="3" fill="${ln}"/>
+  <text x="18" y="${H-12}" font-size="11" fill="${mut}">Normal trading</text><text x="${W-18}" y="${H-12}" font-size="11" fill="${mut}" text-anchor="end">Every holder has sold</text></svg>`;
+}
+function burnSVG(){
+  const W=640,H=260,G=6,fl=cssv('--floor'),mut=cssv('--muted'),ln=cssv('--line'),bg=cssv('--bg');const R=mulberry(11);
+  let x=18,y=204,d=`M${x},${y}`,dots='';
+  for(let i=0;i<14;i++){x=snap(x+18+R()*28,G);d+=`H${x}`;y=snap(y-8-R()*12,G);d+=`V${y}`;dots+=`<rect x="${x-6}" y="${y-6}" width="12" height="12" fill="${bg}" stroke="${fl}" stroke-width="3"/>`}
+  d+=`H${W-18}`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Floor stepping up with each buyback and burn" font-family="${PF}" shape-rendering="crispEdges"><defs>${dither('db',fl)}</defs><path d="${d}V${H-30}H18Z" fill="url(#db)"/><path d="${d}" fill="none" stroke="${fl}" stroke-width="4"/>${dots}<rect x="18" y="${H-30}" width="${W-36}" height="3" fill="${ln}"/><text x="18" y="${H-8}" font-size="11" fill="${mut}">Swaps</text><text x="${W-18}" y="${H-8}" font-size="11" fill="${mut}" text-anchor="end">14 buybacks, each one a step</text></svg>`;
+}
+function buildHow(){
+  $('#heroChart').innerHTML=stepSVG({W:1100,H:320,seed:21,N:220,notches:7,G:8,label:'Illustrative floor progression: price moves around while the backed floor steps up',endLabel:'Illustrative. Real increases depend on reserve growth and protocol rules.'});
+  $('#viz3').innerHTML=stepSVG({seed:5,N:120,notches:5})+'<p class="cap">Each labelled step is a notch: the reserve crossed its threshold and the floor locked higher.</p>';
+  $('#viz4').innerHTML=dumpSVG()+'<p class="cap">Price falls onto the floor and stops. Sells still pay 1.5% into the reserve on the way down.</p>';
+  $('#viz5').innerHTML=burnSVG()+'<p class="cap">Each square is a buyback: spare reserve bought tokens, burned them, and the floor stepped up.</p>';
+  $('#viz1').innerHTML=`<div style="display:flex;gap:14px;align-items:center;margin-bottom:16px">${avatar('DEMOLAUNCH',64)}<div><div style="font-family:var(--display);font-weight:700;font-size:20px">Your token</div><div class="muted">$YOURS ${tierBadge(0)}</div></div></div>
+  <div class="bag" style="font-size:15px;gap:8px 10px"><span>Starting market cap</span><span>≈$10K</span><span>Supply</span><span>1,000,000,000</span><span class="fl">Floor reserve seeded</span><span class="fl">Yes, at N0</span><span>Creator first buy</span><span>0 to 5%, public</span><span>Liquidity</span><span>Protocol-controlled</span></div>
+  <div class="bar" style="margin-top:16px"><i style="width:4%"></i></div><p class="cap" style="margin:4px 0 0">Progress to N1 starts at zero and fills with every trade.</p>`;
+  const fees=[['Buys the token',970,'var(--up)'],['Floor reserve',15,'var(--floor)'],['$NOTCH buyback and burn',5,'var(--floor)'],['Creator',5,'var(--muted)'],['Treasury',5,'var(--muted)']];
+  $('#feebars').innerHTML=`<div class="fb top"><span>You buy</span><span></span><span>$1,000</span></div>`+fees.map(([l,v,c])=>`<div class="fb"><span>${l}</span><i style="width:${(6+94*Math.sqrt(v/970)).toFixed(1)}%;background:repeating-linear-gradient(90deg,${c} 0 8px,transparent 8px 10px)"></i><span>$${v.toFixed(2)}</span></div>`).join('');
+  const nt=[['N0','Launch','Initial reserve established'],['N1','Bronze','First floor increase'],['N2','Silver','Second floor increase'],['N3','Gold','Third floor increase'],['N4','Diamond','Fourth floor increase'],['N5+','Infinite','Continued floor increases']];
+  $('#notchtable').innerHTML=nt.map((r,i)=>`<div class="nt" style="--tc:${TIERS[i].c}"><b>${r[0]}</b><div class="s">${r[1]}</div><div class="d">${r[2]}</div><div class="blocks">${'<i></i>'.repeat(i+1)}${i===5?'<span style="color:var(--tc);font-weight:700">…</span>':''}</div></div>`).join('');
+  const al=[['Token floor reserves','1.5%','var(--floor)'],['$NOTCH buyback and burn','0.5%','color-mix(in srgb,var(--floor) 55%,var(--panel))'],['Token creator revenue','0.5%','var(--up)'],['Protocol treasury','0.5%','var(--muted)']];
+  $('#alloc').innerHTML=al.map(a=>`<div class="al"><i style="background:${a[2]}"></i><span>${a[0]}</span><b>${a[1]}</b></div>`).join('')+`<div class="al"><i></i><span>Total</span><b>3.0%</b></div>`;
+  const wh=['More tokens launch on NOTCH','More trading volume generates fees','Floor reserves grow and unlock notches','0.5% of volume buys $NOTCH','Bought $NOTCH is burned','Utility grows and draws more activity'];
+  $('#wheel').innerHTML=wh.map((w,i)=>`<div class="wh"><div class="num">${i+1}</div>${w}</div>`).join('');
+  calc();
+}
+const volAt=v=>Math.round(Math.pow(10,2+v/100*4)), resAt=v=>Math.round(Math.pow(10,2+v/100*4));
+function calc(){
+  const vol=volAt(+$('#cVol').value),res=resAt(+$('#cRes').value);
+  $('#cVolL').textContent=fmt(vol);$('#cResL').textContent=fmt(res);
+  const perDay=vol*.015,need=res*.25,days=perDay?need/perDay:Infinity;
+  const dTxt=!isFinite(days)?'Never':days<1/24?'Under an hour':days<1?Math.round(days*24)+' hours':days<365?days.toFixed(days<10?1:0)+' days':'Over a year';
+  $('#cOut').innerHTML=`<div class="big"><span class="k">Time to next notch</span><b>${dTxt}</b></div><div><span class="k">Added to reserve per day</span><b>${fmt(perDay)}</b></div><div><span class="k">Reserve needed for the notch</span><b>${fmt(need)}</b></div><div><span class="k">Creator earns per day</span><b>${fmt(vol*.005)}</b></div><div><span class="k">$NOTCH burned per day</span><b>${fmt(vol*.005)}</b></div>`;
+}
+$('#cVol').addEventListener('input',calc);$('#cRes').addEventListener('input',calc);
+$('#stepsNav').addEventListener('click',e=>{const b=e.target.closest('button');if(b)document.getElementById(b.dataset.go).scrollIntoView({behavior:'smooth',block:'start'})});
+
+buildHow();renderTicker();route();setTimeout(tick,900);
+})();
+</script>
+</body>
+</html>
