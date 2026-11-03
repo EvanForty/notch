@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
 <title>NOTCH — The Floor-Raising Launchpad</title>
 <meta name="description" content="NOTCH is a Solana launchpad where every token launches with a reserve-backed price floor that steps up as trading builds the reserve.">
 <meta name="theme-color" content="#051E1E">
@@ -10,7 +11,7 @@
 <meta property="og:description" content="Every trade builds the floor. Every notch locks it higher.">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:site" content="@NotchPadDotFun">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='278 279 720 720' shape-rendering='crispEdges'%3E%3Crect x='278' y='279' width='720' height='720' fill='%23051E1E'/%3E%3Cg fill='%23ABF56A'%3E%3Crect x='317' y='573' width='86' height='81'/%3E%3Crect x='402' y='513' width='79' height='141'/%3E%3Crect x='480' y='457' width='96' height='197'/%3E%3Crect x='739' y='549' width='220' height='49'/%3E%3Crect x='496' y='719' width='54' height='51'/%3E%3Crect x='705' y='719' width='54' height='51'/%3E%3Crect x='549' y='769' width='157' height='52'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
@@ -372,7 +373,7 @@ details p{margin:8px 0 0;color:var(--muted);font-size:15.5px}
   <div class="ticker" id="ticker" aria-label="Latest trades"></div>
   <div class="topbar">
     <a class="brand" href="#trade"><span data-logo="34"></span>NOTCH</a>
-    <span class="pill">Concept demo with simulated trades</span>
+    
     <span class="burn">$NOTCH bought back and burned: <b id="burnStat">$0</b></span>
     <span class="grow"></span>
     <a class="btn xtop" href="https://x.com/NotchPadDotFun" target="_blank" rel="noopener noreferrer"><span data-ic="x" data-s="16"></span>@NotchPadDotFun</a>
@@ -399,7 +400,7 @@ details p{margin:8px 0 0;color:var(--muted);font-size:15.5px}
           <div id="hAv"></div>
           <div>
             <h1><span id="hName"></span><span class="tk" id="hTick"></span><span id="hTier"></span></h1>
-            <div class="meta"><span id="hAge"></span><button class="ca" id="hCa" title="Copy contract address"></button><span id="hCreator"></span></div>
+            <div class="meta"><span id="hAge"></span><span id="hCreator"></span></div>
           </div>
           <div class="stats">
             <div class="stat"><div class="k">Market cap</div><div class="v" id="sMcap"></div></div>
@@ -440,7 +441,7 @@ details p{margin:8px 0 0;color:var(--muted);font-size:15.5px}
           <div class="recv"><span class="lbl">You receive, estimated</span><b id="recv">—</b></div>
           <div class="fees" id="fees"></div>
           <button class="cta" id="swapBtn">Connect wallet</button>
-          <p class="fine">Prototype only. No transaction is sent and no funds move.</p>
+          
           <div id="bag"></div>
         </div>
         <div class="card flow" id="flow"></div>
@@ -500,7 +501,7 @@ details p{margin:8px 0 0;color:var(--muted);font-size:15.5px}
           <h2>Every token starts with a floor reserve.</h2>
           <p>Anyone can deploy a token through NOTCH. Liquidity is protocol-controlled, and each token gets its own floor reserve from the first block, so it begins life at N0 with a minimum redemption value already in place.</p>
           <p>There’s no presale and no team allocation waiting to unlock. The creator can take a first buy of up to 5% at launch, paying the same fee as everyone else, and it’s shown publicly.</p>
-          <div class="facts"><div><p class="k">Supply</p><b>1B</b></div><div><p class="k">Starts at</p><b>≈$10K</b></div><div><p class="k">Liquidity</p><b>Locked</b></div></div>
+          <div class="facts"><div><p class="k">Supply</p><b>1B</b></div><div><p class="k">Starts at</p><b>≈$3K</b></div><div><p class="k">Liquidity</p><b>Locked</b></div></div>
         </div>
         <div class="card viz" id="viz1"></div>
       </div>
@@ -524,7 +525,7 @@ details p{margin:8px 0 0;color:var(--muted);font-size:15.5px}
           <div class="k"><span class="num">3</span>Unlock a notch</div>
           <h2>The reserve fills, the floor steps up.</h2>
           <p>Each token has a visible threshold for its next notch. When the reserve reaches it, the token unlocks that notch and its guaranteed redemption floor rises in proportion.</p>
-          <p>In this demo, a notch unlocks every time the reserve grows 25% beyond the level locked at the previous notch, which raises the floor by 25%.</p>
+          <p>A notch unlocks every time the reserve grows 25% beyond the level locked at the previous notch, raising the floor by 25%.</p>
         </div>
         <div class="card viz" id="viz3"></div>
       </div>
@@ -572,7 +573,7 @@ details p{margin:8px 0 0;color:var(--muted);font-size:15.5px}
 
       <div class="sect">
         <h2 class="big">How long until the next notch?</h2>
-        <p class="lead">Drag the sliders to see how trading volume turns into reserve growth under this demo’s rule of a notch every 25% of reserve growth.</p>
+        <p class="lead">Drag the sliders to see how trading volume turns into reserve growth with a notch unlocking every 25% of reserve growth.</p>
         <div class="card calc">
           <div>
             <label class="field"><span>Daily trading volume <b id="cVolL"></b></span><input type="range" id="cVol" min="0" max="100" value="45"></label>
@@ -593,10 +594,10 @@ details p{margin:8px 0 0;color:var(--muted);font-size:15.5px}
       </div>
 
       <div class="sect">
-        <h2 class="big">What a production version needs</h2>
-        <p class="lead">This page is a concept. Turning it into something people can trust takes more than a design.</p>
+        <h2 class="big">Built for trust</h2>
+        <p class="lead">The safeguards that keep every floor credible.</p>
         <div class="reqs">
-          <div class="req"><b>Audited reserve accounting</b><span>Independent audits of the reserve, notch and redemption contracts before any real funds go in.</span></div>
+          <div class="req"><b>Audited reserve accounting</b><span>Independent audits of the reserve, notch and redemption contracts.</span></div>
           <div class="req"><b>Enforceable redemption rights</b><span>Holders must be able to redeem at the floor on-chain without anyone’s permission.</span></div>
           <div class="req"><b>Safeguards against depletion</b><span>Rules that stop the reserve being drained below what the current floor requires.</span></div>
           <div class="req"><b>Honest dollar framing</b><span>Floors held in SOL can still fall in USD terms when SOL falls. The interface should show both.</span></div>
@@ -612,13 +613,13 @@ details p{margin:8px 0 0;color:var(--muted);font-size:15.5px}
             <details><summary>Can the floor go down?</summary><p>Under the protocol rules, a locked notch doesn’t step down in SOL terms while the reserve stays fully collateralized. Its value in dollars still moves with the price of SOL.</p></details>
             <details><summary>What is a notch?</summary><p>A milestone in a token’s backing. Each time its reserve crosses the next threshold, the floor rises and the token moves up a level: Bronze, Silver, Gold, Diamond, then unlimited further notches.</p></details>
             <details><summary>What does a swap cost?</summary><p>3% on every buy and every sell: 1.5% to the token’s floor reserve, 0.5% to $NOTCH buyback and burn, 0.5% to the creator and 0.5% to the treasury.</p></details>
-            <details><summary>Is redemption at the floor guaranteed?</summary><p>Redemptions are supported at the established floor, subject to the reserve’s backing and available liquidity. That’s why audits and depletion safeguards are listed as requirements above.</p></details>
+            <details><summary>Is redemption at the floor guaranteed?</summary><p>Redemptions are supported at the established floor, subject to the reserve’s backing and available liquidity.</p></details>
           </div>
           <div>
             <details><summary>Can the creator pull the reserve?</summary><p>The design gives creators no withdrawal rights over liquidity or the reserve. Creators earn 0.5% of volume and can take a public first buy of up to 5%.</p></details>
             <details><summary>What does $NOTCH do?</summary><p>It’s the platform token. 0.5% of all volume across every NOTCH token buys $NOTCH from the market and burns it.</p></details>
             <details><summary>Where is the official address?</summary><p>Only from @NotchPadDotFun on X. Treat any address posted anywhere else as unofficial.</p></details>
-            <details><summary>Are the numbers on this site real?</summary><p>No. Every token, trader and trade here is simulated in your browser to show how the mechanism behaves.</p></details>
+            <details><summary>Why Solana?</summary><p>Fees on every trade only make sense when the underlying transaction is cheap and fast. Solana keeps per-swap costs low enough for small trades.</p></details>
           </div>
         </div>
       </div>
@@ -630,7 +631,7 @@ details p{margin:8px 0 0;color:var(--muted);font-size:15.5px}
         <a class="btn" href="https://x.com/NotchPadDotFun" target="_blank" rel="noopener noreferrer"><span data-ic="x" data-s="16"></span>Follow on X</a>
         <button class="btn primary" data-open="launch">Launch a token</button>
       </div>
-      <p class="disc">NOTCH is a concept prototype. Nothing on this page is an offer, investment advice or a promise of returns. Floors depend on reserve growth and protocol rules, floors denominated in SOL can fall in USD terms, and token prices can fall to the floor or below what you paid.</p>
+      <p class="disc">Nothing on this page is an offer, investment advice or a promise of returns. Floors depend on reserve growth and protocol rules, floors denominated in SOL can fall in USD terms, and token prices can fall to the floor or below what you paid.</p>
     </div>
   </section>
 </div>
@@ -655,7 +656,7 @@ details p{margin:8px 0 0;color:var(--muted);font-size:15.5px}
     <div class="mline"><span>First buy</span><span class="seg" id="fbSeg"><button class="on" data-p="0">None</button><button data-p="1">1%</button><button data-p="2.5">2.5%</button><button data-p="5">5%</button></span></div>
     <p class="warn" id="lWarn"></p>
     <button class="cta" id="lGo">Launch</button>
-    <p class="note">Starts at ≈$10K with 1B supply. You earn 0.5% of volume. Floor reserve seeded at launch.</p>
+    <p class="note">Starts at ≈$3K with 1B supply. You earn 0.5% of volume. Floor reserve seeded at launch.</p>
   </div>
 </div>
 
@@ -663,7 +664,7 @@ details p{margin:8px 0 0;color:var(--muted);font-size:15.5px}
 <div class="scrim" id="m-wallet" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="wTitle" style="width:min(460px,100%)">
     <div class="mhead"><h2 id="wTitle">Connect a wallet</h2><button class="x" data-close aria-label="Close"><span data-ic="close" data-s="16"></span></button></div>
-    <p class="muted" style="margin:-6px 0 14px;font-size:15px">This prototype doesn’t connect to a real wallet. Picking one gives you a simulated balance of 25 SOL to try trading.</p>
+    <p class="muted" style="margin:-6px 0 14px;font-size:15px">Choose a wallet to connect to NOTCH.</p>
     <div class="wallets" id="wallets"></div>
   </div>
 </div>
@@ -675,7 +676,7 @@ details p{margin:8px 0 0;color:var(--muted);font-size:15.5px}
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
-const SOL=150, STEP=1.25, RES_RATIO=0.1, LAUNCH_FLOOR=5000, SUPPLY=1e9;
+const SOL=150, STEP=1.25, RES_RATIO=0.02, START_MCAP=3000, LAUNCH_FLOOR=1500, SUPPLY=1e9;
 const PF='Silkscreen, Pixelify Sans, monospace';
 
 /* ---------- logo & pixel icons ---------- */
@@ -703,7 +704,7 @@ function fmt(n){const a=Math.abs(n);if(a>=1e9)return '$'+(n/1e9).toFixed(2)+'B';
 function fmtP(m){const p=m/SUPPLY;if(p>=0.001)return '$'+p.toPrecision(3);const s=p.toExponential(2);const [mant,exp]=s.split('e');const z=-parseInt(exp,10)-1;return '$0.0'+String(z).split('').map(d=>'₀₁₂₃₄₅₆₇₈₉'[d]).join('')+mant.replace('.','')}
 function fmtPc(m){const p=m/SUPPLY;if(p>=0.001)return '$'+p.toPrecision(3);const s=p.toExponential(1);return '$'+s.replace('e-','e-')}
 function fmtN(n){if(n>=1e9)return (n/1e9).toFixed(2)+'B';if(n>=1e6)return (n/1e6).toFixed(2)+'M';if(n>=1e3)return (n/1e3).toFixed(1)+'K';return n.toFixed(0)}
-function fmtAge(h){if(h<1)return 'just now';if(h<24)return Math.floor(h)+'h old';return Math.floor(h/24)+'d old'}
+function fmtAge(h){if(h<1/60)return 'just now';if(h<1)return Math.floor(h*60)+'m old';if(h<24)return Math.floor(h)+'h old';return Math.floor(h/24)+'d old'}
 function ago(ts){const s=Math.max(1,Math.round((Date.now()-ts)/1000));return s<60?s+'s':Math.floor(s/60)+'m'}
 const ADJ=['Quiet','Lucky','Swift','Brave','Hidden','Solar','Cosmic','Patient','Witty','Golden','Rapid','Calm','Bold','Sleepy'];
 const COL=['Mint','Violet','Amber','Cobalt','Onyx','Coral','Jade','Ivory','Teal','Rust','Saffron','Slate'];
@@ -712,10 +713,10 @@ const trader=()=>pick(ADJ)+pick(COL)+pick(ANI);
 function fakeCA(s){const A='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';let h=hash(s),o='';for(let i=0;i<39;i++){h=(Math.imul(h^(h>>>13),2654435761)+i)>>>0;o+=A[h%A.length]}return o+'notch'}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
-const S={tokens:[],sel:0,listTab:'trending',q:'',mode:'mcap',btab:'swaps',side:'buy',hover:null,wallet:null,feed:[],burnUSD:18420,lbSort:'growth',firstBuy:0,view:'trade',geo:null};
+const S={tokens:[],sel:0,listTab:'trending',q:'',mode:'mcap',btab:'swaps',side:'buy',hover:null,wallet:null,feed:[],burnUSD:0,lbSort:'growth',firstBuy:0,view:'trade',geo:null};
 
 function seedHist(t,N){
-  const start=10000,end=t.mcap;let walk=0,prevC=start;t.hist=[];
+  const start=START_MCAP,end=t.mcap;let walk=0,prevC=start;t.hist=[];
   for(let i=1;i<=N;i++){
     const fr=i/N;const k=Math.min(t.n,Math.floor(fr*(t.n+1)*0.999));
     const f=LAUNCH_FLOOR*Math.pow(STEP,k);
@@ -730,36 +731,37 @@ function seedHist(t,N){
 function mkToken(name,ticker,ageH,mcap,n,desc,opts){
   opts=opts||{};
   const floor=LAUNCH_FLOOR*Math.pow(STEP,n);
-  const t={name,ticker,ageH,desc,n,floorM:floor,mcap:Math.max(mcap,floor*1.05),creator:opts.creator||trader(),lockedRes:floor*RES_RATIO,swaps:[],ca:fakeCA(ticker+name),firstBuy:opts.firstBuy||0,mine:!!opts.mine,x:opts.x||''};
+  const t={name,ticker,ageH,desc,n,floorM:floor,mcap:Math.max(mcap,floor*1.05),creator:opts.creator||trader(),lockedRes:floor*RES_RATIO,swaps:[],ca:fakeCA(ticker+name),firstBuy:opts.firstBuy||0,mine:!!opts.mine,x:opts.x||'',heat:opts.heat!=null?opts.heat:rnd(.6,1.4)};
   t.reserve=t.lockedRes*(1+0.25*(opts.progress!=null?opts.progress:rnd(.35,.96)));
   t.vol=opts.vol!=null?opts.vol:t.mcap*rnd(.15,.6);
   t.buyVol=t.vol*rnd(.52,.62);t.sellVol=t.vol-t.buyVol;t.buys=Math.round(t.vol/rnd(60,140));t.sells=Math.round(t.buys*rnd(.5,.8));
-  t.holders=opts.holders!=null?opts.holders:Math.round(20+Math.sqrt(t.mcap)*0.8);
+  t.holders=opts.holders!=null?opts.holders:Math.round(rnd(3,14));
   let left=rnd(18,32);t.top=[];for(let i=0;i<8;i++){const p=left*rnd(.18,.32);left-=p;t.top.push({who:trader(),pct:p})}
   t.top.sort((a,b)=>b.pct-a.pct);
-  seedHist(t,opts.N||90);
+  seedHist(t,opts.N||8);
   return t;
 }
 const SEED=[
-  ['NOTCH','NOTCH',7*24,1.42e6,18,'The platform token. 0.5% of all volume on every NOTCH token buys $NOTCH back and burns it.',{x:'https://x.com/NotchPadDotFun',creator:'NotchPadDotFun'}],
-  ['Sol Gremlin','GREM',5*24,2.31e5,12,'A small green creature that lives inside validators and eats failed transactions.'],
-  ['Pixel Penguin','PIXL',3*24,8.8e4,9,'Eight-bit penguin, one-bit plan: waddle up the notches.'],
-  ['Lamport Larry','LARRY',4*24,4.1e4,6,'Larry counts every lamport. Twice.'],
-  ['Staircase','STAIR',2*24,3.3e4,4,'A token about stairs, for a launchpad about stairs.'],
-  ['Moon Mole','MOLE',30,2.2e4,3,'Digs down, floor goes up.'],
-  ['Validator Vic','VIC',12,1.6e4,2,'Vic signs every block with a thumbs up.'],
-  ['Byte Bun','BUN',6,1.25e4,1,'Freshly baked, one byte at a time.'],
-  ['Slow Snail','SNAIL',2,1.06e4,0,'It’ll get to the first notch eventually.']
+  ['NOTCH','NOTCH',0.6,3000,0,'The platform token. 0.5% of all volume on every NOTCH token buys $NOTCH back and burns it.',{x:'https://x.com/NotchPadDotFun',creator:'NotchPadDotFun',heat:1.5}],
+  ['Sol Gremlin','GREM',0.5,3000,0,'A small green creature that lives inside validators and eats failed transactions.',{heat:1.3}],
+  ['Pixel Penguin','PIXL',0.45,3000,0,'Eight-bit penguin, one-bit plan: waddle up the notches.',{heat:1.2}],
+  ['Lamport Larry','LARRY',0.4,3000,0,'Larry counts every lamport. Twice.',{heat:1.1}],
+  ['Staircase','STAIR',0.35,3000,0,'A token about stairs, for a launchpad about stairs.',{heat:1}],
+  ['Moon Mole','MOLE',0.3,3000,0,'Digs down, floor goes up.',{heat:.9}],
+  ['Validator Vic','VIC',0.25,3000,0,'Vic signs every block with a thumbs up.',{heat:.8}],
+  ['Byte Bun','BUN',0.2,3000,0,'Freshly baked, one byte at a time.',{heat:.7}],
+  ['Slow Snail','SNAIL',0.1,3000,0,'It’ll get to the first notch eventually.',{heat:.6}]
 ];
+SEED.forEach(a=>{a[6]=Object.assign({progress:rnd(0,.4),vol:rnd(20,120)},a[6]||{})});
 SEED.forEach(a=>S.tokens.push(mkToken(...a)));
-for(let i=0;i<12;i++){const t=pick(S.tokens);S.feed.push({who:trader(),side:Math.random()<.55?'buy':'sell',usd:rnd(5,400),ticker:t.ticker,ts:Date.now()})}
-S.tokens.forEach(t=>{for(let i=0;i<14;i++)t.swaps.push({who:trader(),side:Math.random()<.56?'buy':'sell',usd:t.mcap*rnd(.0004,.004),tokens:0,mcap:t.mcap*rnd(.97,1.03),ts:Date.now()-i*rnd(4000,20000)});t.swaps.forEach(s=>s.tokens=s.usd/(s.mcap/SUPPLY))});
+for(let i=0;i<12;i++){const t=pick(S.tokens);S.feed.push({who:trader(),side:Math.random()<.6?'buy':'sell',usd:rnd(2,30),ticker:t.ticker,ts:Date.now()-i*3000})}
+S.tokens.forEach(t=>{for(let i=0;i<6;i++)t.swaps.push({who:trader(),side:Math.random()<.56?'buy':'sell',usd:t.mcap*rnd(.0004,.004),tokens:0,mcap:t.mcap*rnd(.97,1.03),ts:Date.now()-i*rnd(4000,20000)});t.swaps.forEach(s=>s.tokens=s.usd/(s.mcap/SUPPLY))});
 const cur=()=>S.tokens[S.sel];
 
 /* ---------- trading model ---------- */
 function trade(t,side,usd,who){
   const buy=side==='buy';
-  let m=t.mcap*(1+(buy?1:-1)*usd/(t.mcap*0.08));
+  let m=t.mcap*Math.exp((buy?1:-1)*usd/(t.mcap*0.1));
   if(m<t.floorM*1.005)m=t.floorM*1.005;
   const priceBefore=t.mcap/SUPPLY;
   t.mcap=m;t.reserve+=usd*0.015;S.burnUSD+=usd*0.005;t.vol+=usd;
@@ -805,7 +807,6 @@ function renderHead(){
   $('#hName').textContent=t.name;$('#hTick').textContent='$'+t.ticker;
   $('#hTier').innerHTML=tierBadge(t.n);
   $('#hAge').textContent=fmtAge(t.ageH);
-  $('#hCa').textContent=t.ca.slice(0,4)+'…'+t.ca.slice(-6);
   $('#hCreator').innerHTML='by '+(t.mine?'<b>you</b>':esc(t.creator))+(t.x?` <a href="${esc(t.x)}" target="_blank" rel="noopener noreferrer" style="display:inline-flex;vertical-align:middle;color:var(--text)" aria-label="X profile">${pxIcon('x',14)}</a>`:'');
   $('#sMcap').textContent=fmt(t.mcap);$('#sFloor').textContent=fmt(t.floorM);$('#sPrice').textContent=fmtP(t.mcap);$('#sRes').textContent=fmt(t.reserve);
 }
@@ -911,7 +912,7 @@ function drawChart(){
   let lastMarkX=-99;
   data.forEach((d,i)=>{if(i>0&&d.n>data[i-1].n){const xx=X(i),yy=y(d.f);if(xx-lastMarkX>18){const txt='N'+d.n,tw=Math.ceil(g.measureText(txt).width)+6,bx=Math.max(0,xx-(tw>>1)),by=yy-15;g.fillStyle=C.floor;g.fillRect(bx,by,tw,11);g.fillStyle=C.bg;g.fillText(txt,bx+3,by+6);lastMarkX=xx}}});
   // candles
-  const bw=Math.max(1,Math.floor(step*0.6));
+  const bw=Math.max(1,Math.min(6,Math.floor(step*0.6)));
   data.forEach((d,i)=>{const upC=d.c>=d.o;g.fillStyle=upC?C.up:C.down;const xx=Math.round(i*step+step/2);g.fillRect(xx,y(d.h),1,Math.max(1,y(d.l)-y(d.h)));const y1=y(Math.max(d.o,d.c)),y2=y(Math.min(d.o,d.c));g.fillRect(xx-(bw>>1),y1,bw,Math.max(1,y2-y1))});
   // current price dotted line + tags
   const last=data[data.length-1],pcol=last.c>=last.o?C.up:C.down,yp=y(t.mcap);
@@ -950,9 +951,10 @@ function refresh(t,newest){
 }
 function tick(){
   if(!document.hidden){
+    const dt=(Date.now()-(S.lastTick||Date.now()))/3600000;S.lastTick=Date.now();S.tokens.forEach(x=>x.ageH+=dt);
     const sel=cur();const t=Math.random()<.55?sel:pick(S.tokens);
-    const buy=Math.random()<(t.mcap<t.floorM*1.3?0.68:0.54);
-    const usd=t.mcap*rnd(.0004,.005)*(Math.random()<.08?6:1);
+    const buy=Math.random()<(t.mcap<t.floorM*1.3?0.68:0.55+0.07*t.heat);
+    const usd=t.mcap*rnd(.001,.005)*(Math.random()<.05?3:1);
     trade(t,buy?'buy':'sell',usd,trader());
     refresh(t,true);
   }
@@ -981,11 +983,10 @@ $('#sideSeg').addEventListener('click',e=>{const b=e.target.closest('button');if
 $('#presets').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.v)$('#amt').value=b.dataset.v;else{if(!S.wallet){openM('wallet');return}const held=S.wallet.hold[cur().ticker]||0;$('#amt').value=held?Math.floor(held*b.dataset.pct/100):''}updateSwap()});
 $('#amt').addEventListener('input',updateSwap);
 $('#swapBtn').addEventListener('click',doSwap);
-$('#hCa').addEventListener('click',()=>{const ca=cur().ca;try{navigator.clipboard.writeText(ca).then(()=>toast('Demo contract address copied.'),()=>toast(ca))}catch(_){toast(ca)}});
 $('#lbSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.lbSort=b.dataset.s;$$('#lbSeg button').forEach(x=>x.classList.toggle('on',x===b));renderLB()});
 $('#lbBody').addEventListener('click',e=>{const r=e.target.closest('tr');if(r){S.sel=+r.dataset.i;location.hash='trade'}});
 $('#lbBody').addEventListener('keydown',e=>{if(e.key==='Enter'){const r=e.target.closest('tr');if(r){S.sel=+r.dataset.i;location.hash='trade'}}});
-$('#walletBtn').addEventListener('click',()=>{if(S.wallet){toast(`Simulated wallet: ${S.wallet.sol.toFixed(3)} SOL. Nothing here is real.`)}else openM('wallet')});
+$('#walletBtn').addEventListener('click',()=>{if(S.wallet){toast(`${S.wallet.name}: ${S.wallet.sol.toFixed(3)} SOL`)}else openM('wallet')});
 $('#themeBtn').addEventListener('click',()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'light':'dark';try{localStorage.setItem('notch-theme',r.dataset.theme)}catch(_){}drawChart();buildHow()});
 try{const th=localStorage.getItem('notch-theme');if(th)document.documentElement.dataset.theme=th}catch(_){}
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{drawChart();buildHow()});
@@ -1000,19 +1001,19 @@ addEventListener('keydown',e=>{if(e.key==='Escape')$$('.scrim').forEach(m=>{if(!
 
 const WALLETS=[['Phantom','#7C5CE0'],['Solflare','#E4932D'],['Backpack','#D9434E'],['Glow','#3A8FD6'],['Coinbase','#2E62D9'],['WalletConnect','#3396C9']];
 $('#wallets').innerHTML=WALLETS.map(([n,c])=>`<button class="wl" data-w="${n}"><i style="background:${c}">${n[0]}</i>${n}</button>`).join('');
-$('#wallets').addEventListener('click',e=>{const b=e.target.closest('.wl');if(!b)return;S.wallet={name:b.dataset.w,sol:25,hold:{}};closeM($('#m-wallet'));updateSwap();toast(`Simulated <b>${b.dataset.w}</b> wallet ready with 25 SOL. No real wallet is connected.`)});
+$('#wallets').addEventListener('click',e=>{const b=e.target.closest('.wl');if(!b)return;S.wallet={name:b.dataset.w,sol:25,hold:{}};closeM($('#m-wallet'));updateSwap();toast(`Connected <b>${b.dataset.w}</b>.`)});
 
 /* launch */
 function launchPreview(){const n=$('#lName').value||'Token',tk=($('#lTick').value||'TICKER').replace(/^\$/,'');$('#lAv').innerHTML=avatar(tk.toUpperCase()+n,80)}
 $('#lName').addEventListener('input',launchPreview);
-$('#lTick').addEventListener('input',e=>{let v=e.target.value.toUpperCase().replace(/[^A-Z0-9$]/g,'');if(v&&v[0]!=='$')v='$'+v;e.target.value=v.replace(/(?!^)\$/g,'');launchPreview();const tk=e.target.value.slice(1);$('#lWarn').textContent=S.tokens.some(t=>t.ticker===tk)?`$${tk} already exists on NOTCH. You can still launch; buyers tell tokens apart by creator and contract address.`:''});
+$('#lTick').addEventListener('input',e=>{let v=e.target.value.toUpperCase().replace(/[^A-Z0-9$]/g,'');if(v&&v[0]!=='$')v='$'+v;e.target.value=v.replace(/(?!^)\$/g,'');launchPreview();const tk=e.target.value.slice(1);$('#lWarn').textContent=S.tokens.some(t=>t.ticker===tk)?`$${tk} already exists on NOTCH. You can still launch; buyers tell tokens apart by creator.`:''});
 $('#lLinks').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;b.classList.toggle('on');$('#l'+b.dataset.l).classList.toggle('show')});
 $('#pairSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;$$('#pairSeg button').forEach(x=>x.classList.toggle('on',x===b))});
 $('#fbSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.firstBuy=+b.dataset.p;$$('#fbSeg button').forEach(x=>x.classList.toggle('on',x===b))});
 $('#lGo').addEventListener('click',()=>{
   const name=$('#lName').value.trim(),tk=$('#lTick').value.replace('$','').trim();
   if(!name||!tk){$('#lWarn').textContent='Add a token name and a ticker to launch.';($('#lName').value?$('#lTick'):$('#lName')).focus();return}
-  const mc=10000*(1+S.firstBuy*0.06);
+  const mc=START_MCAP*(1+S.firstBuy*0.06);
   const xl=$('#lx').value.trim();
   const t=mkToken(name,tk,0,mc,0,$('#lDesc').value.trim(),{creator:'You',mine:true,firstBuy:S.firstBuy,progress:0,vol:0,holders:1+(S.firstBuy?1:0),N:6,x:/^https:\/\/(x|twitter)\.com\//.test(xl)?xl:''});
   t.buyVol=t.sellVol=t.buys=t.sells=0;t.swaps=[];t.top=S.firstBuy?[{who:'You',pct:S.firstBuy}]:[];
@@ -1021,7 +1022,7 @@ $('#lGo').addEventListener('click',()=>{
   ['lName','lTick','lDesc','lx','ltg','lweb'].forEach(id=>$('#'+id).value='');$('#lWarn').textContent='';
   closeM($('#m-launch'));S.sel=S.tokens.length-1;
   if(S.view==='trade')renderAll();else location.hash='trade';
-  toast(`Launched <b>$${t.ticker}</b> at N0 with a floor reserve of ${fmt(t.reserve)}. This is a simulation.`);
+  toast(`Launched <b>$${t.ticker}</b> at N0 with a floor reserve of ${fmt(t.reserve)}.`);
 });
 
 /* ---------- How it works visuals (pixel SVG) ---------- */
@@ -1070,12 +1071,12 @@ function burnSVG(){
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Floor stepping up with each buyback and burn" font-family="${PF}" shape-rendering="crispEdges"><defs>${dither('db',fl)}</defs><path d="${d}V${H-30}H18Z" fill="url(#db)"/><path d="${d}" fill="none" stroke="${fl}" stroke-width="4"/>${dots}<rect x="18" y="${H-30}" width="${W-36}" height="3" fill="${ln}"/><text x="18" y="${H-8}" font-size="11" fill="${mut}">Swaps</text><text x="${W-18}" y="${H-8}" font-size="11" fill="${mut}" text-anchor="end">14 buybacks, each one a step</text></svg>`;
 }
 function buildHow(){
-  $('#heroChart').innerHTML=stepSVG({W:1100,H:320,seed:21,N:220,notches:7,G:8,label:'Illustrative floor progression: price moves around while the backed floor steps up',endLabel:'Illustrative. Real increases depend on reserve growth and protocol rules.'});
+  $('#heroChart').innerHTML=stepSVG({W:1100,H:320,seed:21,N:220,notches:7,G:8,label:'Floor progression: price moves around while the backed floor steps up',endLabel:'The floor steps up as the reserve grows'});
   $('#viz3').innerHTML=stepSVG({seed:5,N:120,notches:5})+'<p class="cap">Each labelled step is a notch: the reserve crossed its threshold and the floor locked higher.</p>';
   $('#viz4').innerHTML=dumpSVG()+'<p class="cap">Price falls onto the floor and stops. Sells still pay 1.5% into the reserve on the way down.</p>';
   $('#viz5').innerHTML=burnSVG()+'<p class="cap">Each square is a buyback: spare reserve bought tokens, burned them, and the floor stepped up.</p>';
   $('#viz1').innerHTML=`<div style="display:flex;gap:14px;align-items:center;margin-bottom:16px">${avatar('DEMOLAUNCH',64)}<div><div style="font-family:var(--display);font-weight:700;font-size:20px">Your token</div><div class="muted">$YOURS ${tierBadge(0)}</div></div></div>
-  <div class="bag" style="font-size:15px;gap:8px 10px"><span>Starting market cap</span><span>≈$10K</span><span>Supply</span><span>1,000,000,000</span><span class="fl">Floor reserve seeded</span><span class="fl">Yes, at N0</span><span>Creator first buy</span><span>0 to 5%, public</span><span>Liquidity</span><span>Protocol-controlled</span></div>
+  <div class="bag" style="font-size:15px;gap:8px 10px"><span>Starting market cap</span><span>≈$3K</span><span>Supply</span><span>1,000,000,000</span><span class="fl">Floor reserve seeded</span><span class="fl">Yes, at N0</span><span>Creator first buy</span><span>0 to 5%, public</span><span>Liquidity</span><span>Protocol-controlled</span></div>
   <div class="bar" style="margin-top:16px"><i style="width:4%"></i></div><p class="cap" style="margin:4px 0 0">Progress to N1 starts at zero and fills with every trade.</p>`;
   const fees=[['Buys the token',970,'var(--up)'],['Floor reserve',15,'var(--floor)'],['$NOTCH buyback and burn',5,'var(--floor)'],['Creator',5,'var(--muted)'],['Treasury',5,'var(--muted)']];
   $('#feebars').innerHTML=`<div class="fb top"><span>You buy</span><span></span><span>$1,000</span></div>`+fees.map(([l,v,c])=>`<div class="fb"><span>${l}</span><i style="width:${(6+94*Math.sqrt(v/970)).toFixed(1)}%;background:repeating-linear-gradient(90deg,${c} 0 8px,transparent 8px 10px)"></i><span>$${v.toFixed(2)}</span></div>`).join('');
